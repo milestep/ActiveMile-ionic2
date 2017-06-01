@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Storage } from '@ionic/storage';
 
-import { AuthProvider } from '../providers/auth/auth';
+//import { AuthProvider } from '../providers/auth/auth';
 
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
@@ -18,10 +18,10 @@ export class MyApp {
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public storage: Storage) {
     this.storage.get('token').then((token) => {
-      if (token === null) {
-        this.rootPage = LoginPage
-      } else if (token != null) {
+      if (token) {
         this.rootPage = HomePage
+      } else if (!token) {
+        this.rootPage = LoginPage
       }
     });
   }

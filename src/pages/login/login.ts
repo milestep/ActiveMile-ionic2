@@ -13,9 +13,17 @@ import { HomePage } from '../home/home';
 export class LoginPage {
   constructor(public navCtrl: NavController, public auth: AuthProvider) {}
 
+  public emailField: any;
+  public passwordField: any;
+
   submitAuthLogin() {
-    this.auth.login().then((result) => {
-      console.log(result)
+    let data = JSON.stringify({
+      email: this.emailField,
+      password: this.passwordField
+    });
+
+    this.auth.login(data).subscribe((data) => {
+      // console.log(data)
       this.navCtrl.setRoot(HomePage);
     })
   }
