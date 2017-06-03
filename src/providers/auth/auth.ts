@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
-// import 'rxjs/add/operator/catch';
-// import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs/Observable';
 import { Storage } from '@ionic/storage';
 import { LoadingController } from 'ionic-angular';
 
@@ -23,37 +23,23 @@ export class AuthProvider {
     return this.http.post(url, body, this.options)
     .do((res: Response) => {
       this.presentLoading("Login...")
-
-      let date = res.json()
-
-      this.storage.set('token', date.access_token).then((token) => {
-        // this.storage.get('token').then((token) => {
-        //   console.log("set token", token)
-        // })
-      });
+      this.storage.set('token', res.json().access_token)
     })
-    .map((res: Response) => res.json())
+    .map(this.extractData)
+    .catch(this.catchError);
+  }
 
-    // .do((res) => {
-    //   let date = res.json()
-    //   console.log(date.access_token)
-    // })
+  private extractData(res: Response) {
+    return res.json() || {};
+  }
 
-    //.catch(this.catchError)
-    // private catchError(error: Response | any) {
-    //   console.log(error)
-    //   return Observable.throw(error.json().error || "Server error")
-    // }
+  private catchError(error: any) {
+    return Observable.throw(error.message || error);
   }
 
   exit() {
     this.presentLoading("Exit...");
-
-    this.storage.remove("token").then(() => { console.log("delete token") })
-
-    return new Promise((resolve) => {
-      resolve("exit true")
-    })
+    return this.storage.remove("token")
   }
 
   presentLoading(text) {

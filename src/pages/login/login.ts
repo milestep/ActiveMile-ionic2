@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, NavController, AlertController } from 'ionic-angular';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import { AuthProvider } from '../../providers/auth/auth';
 
@@ -11,10 +12,16 @@ import { HomePage } from '../home/home';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  constructor(public navCtrl: NavController, public auth: AuthProvider) {}
-
+  public loginForm:any;
   public emailField: any;
   public passwordField: any;
+
+  constructor(private alertCtrl: AlertController, public navCtrl: NavController, public auth: AuthProvider, public _form: FormBuilder) {
+    this.loginForm = this._form.group({
+      "emailField":["", Validators.required],
+      "passwordField":["", Validators.required]
+    })
+  }
 
   submitAuthLogin() {
     let data = JSON.stringify({
@@ -22,9 +29,22 @@ export class LoginPage {
       password: this.passwordField
     });
 
-    this.auth.login(data).subscribe((data) => {
-      // console.log(data)
-      this.navCtrl.setRoot(HomePage);
-    })
+    this.auth.login(data).subscribe(
+      res => {
+        this.navCtrl.setRoot(HomePage);
+      },
+      error => {
+        this.presentAlert();
+      }
+    );
+  }
+
+  presentAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Error',
+      subTitle: 'Email or password is incorrect',
+      buttons: ['OK']
+    });
+    alert.present();
   }
 }

@@ -5,17 +5,13 @@
 </ion-header>
 
 <ion-content padding>
-  <form>
-    <ion-list>
-      <ion-item>
-        <ion-input type="text" [(ngModel)]="emailField" placeholder="Email" name="email" required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-input type="password" [(ngModel)]="passwordField" placeholder="Password" name="password" required></ion-input>
-      </ion-item>
-    </ion-list>
-
-    <button (click)="submitAuthLogin()" ion-button class="submit-btn" full type="submit">Login</button>
+  <form [formGroup]="loginForm">
+    <ion-item>
+      <ion-input type="text" formControlName="emailField" [(ngModel)]="emailField" placeholder="Email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="password" formControlName="passwordField" [(ngModel)]="passwordField" placeholder="Password"></ion-input>
+    </ion-item>
+    <button (click)="submitAuthLogin()" [disabled]="loginForm.invalid" ion-button class="submit-btn" full type="submit">Login</button>
   </form>
 </ion-content>

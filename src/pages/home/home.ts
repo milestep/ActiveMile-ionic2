@@ -14,7 +14,6 @@ export class HomePage {
 
   submitAuthExit() {
     this.auth.exit().then((result) => {
-      console.log(result)
       this.navCtrl.setRoot(LoginPage);
     })
   }
