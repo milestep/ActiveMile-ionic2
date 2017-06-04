@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="loginForm">
+    <ion-item>
+      <ion-input type="text" formControlName="emailField" [(ngModel)]="emailField" placeholder="Email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="password" formControlName="passwordField" [(ngModel)]="passwordField" placeholder="Password"></ion-input>
+    </ion-item>
+    <button (click)="submitAuthLogin()" [disabled]="loginForm.invalid" ion-button class="submit-btn" full type="submit">Login</button>
+  </form>
+</ion-content>
