@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { AuthProvider } from '../../providers/auth/auth';
+import { LoadingCtrl } from '../../providers/loading/loading';
+import { AlertCtrl } from '../../providers/alert/alert';
 
 import { WorkspacePage } from '../workspace/workspace';
 
@@ -16,7 +18,7 @@ export class LoginPage {
   public emailField: any;
   public passwordField: any;
 
-  constructor(private alertCtrl: AlertController, public navCtrl: NavController, public auth: AuthProvider, public _form: FormBuilder) {
+  constructor(public loadingCtrl: LoadingCtrl, public alertCtrl: AlertCtrl, public navCtrl: NavController, public auth: AuthProvider, public _form: FormBuilder) {
     this.loginForm = this._form.group({
       "emailField":["", Validators.required],
       "passwordField":["", Validators.required]
@@ -31,20 +33,12 @@ export class LoginPage {
 
     this.auth.login(data).subscribe(
       res => {
+        this.loadingCtrl.showLoader("Login...")
         this.navCtrl.setRoot(WorkspacePage);
       },
       error => {
-        this.presentAlert();
+        this.alertCtrl.showAlert("Error", "Email or password is incorrect", "OK")
       }
     );
-  }
-
-  presentAlert() {
-    let alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: 'Email or password is incorrect',
-      buttons: ['OK']
-    });
-    alert.present();
   }
 }

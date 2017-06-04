@@ -1,28 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
 import { Storage } from '@ionic/storage';
-import { LoadingController } from 'ionic-angular';
+
+import { CONFIG } from '../../pages/layout/config';
 
 @Injectable()
 export class AuthProvider {
-  constructor(public http: Http, public storage: Storage, public loadingCtrl: LoadingController) {}
-
-  //private BASE_URL:string = `${window.location.origin}/api`;
-  private BASE_URL:string = `http://localhost:3000/api`;
-  private headers = new Headers({ 'Content-Type': 'application/json' });
-  private options = new RequestOptions({ headers: this.headers });
+  constructor(public http: Http, public storage: Storage) {}
 
   login(body) {
-    const stringifiedParams = "client_id=69a6ecf62760323580c8dfcbca7a5756f5d47e250918f86e95de5bee722dd871&grant_type=password";
-    let url = `${this.BASE_URL}/oauth/token?${stringifiedParams}`;
+    let url = `${CONFIG.BASE_URL}/oauth/token?${CONFIG.STRINGIFIED_PARAMS}`;
 
-    return this.http.post(url, body, this.options)
+    return this.http.post(url, body, CONFIG.OPTIONS)
     .do((res: Response) => {
-      this.presentLoading("Login...")
       this.storage.set('token', res.json().access_token)
     })
     .map(this.extractData)
@@ -38,15 +32,6 @@ export class AuthProvider {
   }
 
   exit() {
-    this.presentLoading("Exit...");
     return this.storage.remove("token")
-  }
-
-  presentLoading(text) {
-    let loader = this.loadingCtrl.create({
-      content: text,
-      duration: 500
-    });
-    loader.present();
   }
 }

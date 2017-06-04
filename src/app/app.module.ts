@@ -11,6 +11,8 @@ import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
+import { LoadingCtrl } from '../providers/loading/loading';
+import { AlertCtrl } from '../providers/alert/alert';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { WorkspaceProvider } from '../providers/workspace/workspace';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthProvider,
-    WorkspaceProvider
+    WorkspaceProvider,
+    LoadingCtrl,
+    AlertCtrl
   ]
 })
 export class AppModule {}
