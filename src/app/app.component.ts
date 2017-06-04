@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 
 //import { AuthProvider } from '../providers/auth/auth';
 
-import { HomePage } from '../pages/home/home';
+import { WorkspacePage } from '../pages/workspace/workspace';
 import { LoginPage } from '../pages/login/login';
 
 @Component({
@@ -19,7 +19,7 @@ export class MyApp {
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public storage: Storage) {
     this.storage.get('token').then((token) => {
       if (token) {
-        this.rootPage = HomePage
+        this.rootPage = WorkspacePage
       } else if (!token) {
         this.rootPage = LoginPage
       }

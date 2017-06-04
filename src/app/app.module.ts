@@ -7,15 +7,16 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { WorkspacePage } from '../pages/workspace/workspace';
 import { AuthProvider } from '../providers/auth/auth';
+import { WorkspaceProvider } from '../providers/workspace/workspace';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    LoginPage
+    LoginPage,
+    WorkspacePage
   ],
   imports: [
     BrowserModule,
@@ -26,14 +27,15 @@ import { AuthProvider } from '../providers/auth/auth';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    LoginPage
+    LoginPage,
+    WorkspacePage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthProvider
+    AuthProvider,
+    WorkspaceProvider
   ]
 })
 export class AppModule {}

@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 import { AuthProvider } from '../../providers/auth/auth';
 
-import { HomePage } from '../home/home';
+import { WorkspacePage } from '../workspace/workspace';
 
 @IonicPage()
 @Component({
@@ -31,7 +31,7 @@ export class LoginPage {
 
     this.auth.login(data).subscribe(
       res => {
-        this.navCtrl.setRoot(HomePage);
+        this.navCtrl.setRoot(WorkspacePage);
       },
       error => {
         this.presentAlert();
