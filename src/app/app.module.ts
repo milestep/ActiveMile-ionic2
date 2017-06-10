@@ -13,6 +13,7 @@ import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
 import { LoadingCtrl } from '../providers/loading/loading';
 import { AlertCtrl } from '../providers/alert/alert';
+import { StorageProvider } from '../providers/storage/storage';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     AuthProvider,
     WorkspaceProvider,
     LoadingCtrl,
-    AlertCtrl
+    AlertCtrl,
+    StorageProvider
   ]
 })
 export class AppModule {}
