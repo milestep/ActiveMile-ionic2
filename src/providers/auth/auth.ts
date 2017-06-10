@@ -1,23 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Injectable }     from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
-import { Storage } from '@ionic/storage';
+import { Observable }     from 'rxjs/Observable';
 
-import { CONFIG } from '../../pages/layout/config';
+import { StorageProvider }  from '../storage/storage';
+import { CONFIG }           from '../../pages/layout/config';
 
 @Injectable()
 export class AuthProvider {
-  constructor(public http: Http, public storage: Storage) {}
+  constructor(public http: Http,
+              public storage: StorageProvider) {
+  }
 
   login(body) {
-    let url = `${CONFIG.BASE_URL}/oauth/token?${CONFIG.STRINGIFIED_PARAMS}`;
+    const URL = `${CONFIG.BASE_URL}/oauth/token?${CONFIG.DEV_STRINGIFIED_PARAMS}`;
 
-    return this.http.post(url, body, CONFIG.OPTIONS)
+    return this.http.post(URL, body, CONFIG.OPTIONS)
     .do((res: Response) => {
-      this.storage.set('token', res.json().access_token)
+      this.storage.setToken(res.json().access_token)
     })
     .map(this.extractData)
     .catch(this.catchError);
@@ -32,6 +34,6 @@ export class AuthProvider {
   }
 
   exit() {
-    return this.storage.remove("token")
+    return this.storage.deleteToken()
   }
 }

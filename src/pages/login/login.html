@@ -7,11 +7,11 @@
 <ion-content padding>
   <form [formGroup]="loginForm">
     <ion-item>
-      <ion-input type="text" formControlName="emailField" [(ngModel)]="emailField" placeholder="Email"></ion-input>
+      <ion-input type="text" formControlName="email" [(ngModel)]="fields.email" placeholder="Email"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input type="password" formControlName="passwordField" [(ngModel)]="passwordField" placeholder="Password"></ion-input>
+      <ion-input type="password" formControlName="password" [(ngModel)]="fields.password" placeholder="Password"></ion-input>
     </ion-item>
-    <button (click)="submitAuthLogin()" [disabled]="loginForm.invalid" ion-button class="submit-btn" full type="submit">Login</button>
+    <button (click)="submitAuthLogin()" [disabled]="loginForm.invalid" ion-button full >Login</button>
   </form>
 </ion-content>

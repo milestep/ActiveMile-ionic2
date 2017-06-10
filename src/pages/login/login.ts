@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component }                from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators }  from '@angular/forms';
 
 import { AuthProvider } from '../../providers/auth/auth';
-import { LoadingCtrl } from '../../providers/loading/loading';
-import { AlertCtrl } from '../../providers/alert/alert';
+import { LoadingCtrl }  from '../../providers/loading/loading';
+import { AlertCtrl }    from '../../providers/alert/alert';
 
 import { WorkspacePage } from '../workspace/workspace';
 
@@ -15,20 +15,27 @@ import { WorkspacePage } from '../workspace/workspace';
 })
 export class LoginPage {
   public loginForm:any;
-  public emailField: any;
-  public passwordField: any;
+  public fields = {
+    email: '',
+    password: ''
+  }
 
-  constructor(public loadingCtrl: LoadingCtrl, public alertCtrl: AlertCtrl, public navCtrl: NavController, public auth: AuthProvider, public _form: FormBuilder) {
+  constructor(public loadingCtrl: LoadingCtrl,
+              public alertCtrl: AlertCtrl,
+              public navCtrl: NavController,
+              public auth: AuthProvider,
+              public _form: FormBuilder) {
+
     this.loginForm = this._form.group({
-      "emailField":["", Validators.required],
-      "passwordField":["", Validators.required]
+      "email":["", Validators.required],
+      "password":["", Validators.required]
     })
   }
 
   submitAuthLogin() {
     let data = JSON.stringify({
-      email: this.emailField,
-      password: this.passwordField
+      email: this.fields.email,
+      password: this.fields.password
     });
 
     this.auth.login(data).subscribe(
