@@ -34,7 +34,6 @@ export class WorkspacePage {
     })
 
     storage.init().then((value)=>{
-      storage.getCurrentWorkspace();
       this.currentWorkspace = storage.getCurrentWorkspace()
     });
 

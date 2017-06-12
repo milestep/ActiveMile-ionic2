@@ -8,7 +8,7 @@ import { RequestOptions } from '@angular/http';
 
 import { StorageProvider }  from '../../providers/storage/storage';
 
-import { CONFIG }           from '../../pages/layout/config';
+import { CONFIG }           from '../../app/config';
 
 @Injectable()
 export class WorkspaceProvider {
