@@ -16,7 +16,7 @@ export class AuthProvider {
   }
 
   login(body) {
-    const URL = `${CONFIG.BASE_URL}/oauth/token?${CONFIG.DEV_STRINGIFIED_PARAMS}`;
+    const URL = `${CONFIG.BASE_URL}/oauth/token?${CONFIG.STRINGIFIED_PARAMS}`;
 
     return this.http.post(URL, body, CONFIG.OPTIONS)
     .do((res: Response) => {
