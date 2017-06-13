@@ -7,9 +7,9 @@ export class AlertCtrl {
 
   showAlert(title, subTitle, buttons) {
     let alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: 'Email or password is incorrect',
-      buttons: ['OK']
+      title: title,
+      subTitle: subTitle,
+      buttons: [buttons]
     });
     alert.present();
   }

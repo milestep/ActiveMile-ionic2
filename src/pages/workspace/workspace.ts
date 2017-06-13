@@ -15,7 +15,7 @@ import { LoginPage }          from '../login/login';
   templateUrl: 'workspace.html',
 })
 export class WorkspacePage {
-  public foundWorkspaces:any;
+  public foundWorkspaces = [];
   public currentWorkspace:any;
   public formWorkspace:any;
   public formEditWorkspace:any;
@@ -46,6 +46,7 @@ export class WorkspacePage {
 
     storage.init().then((value)=>{
       this.currentWorkspace = storage.getCurrentWorkspace()
+      this.checkWorkspaceExistenz()
     });
 
     this.workspace.getWorkspaces().subscribe(
@@ -56,6 +57,21 @@ export class WorkspacePage {
         console.log("error", error)
       }
     );
+  }
+
+  checkWorkspaceExistenz() {
+    let bool = false
+    for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
+      if (this.foundWorkspaces[i].id === this.currentWorkspace) {
+        bool = true
+        break
+      }
+    }
+
+    if (!bool) {
+      this.currentWorkspace = false
+      this.storage.deleteCurrentWorkspace()
+    }
   }
 
   createWorkspace() {

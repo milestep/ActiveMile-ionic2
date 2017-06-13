@@ -23,9 +23,8 @@
     </form>
   </ion-grid>
 
-  <ion-list radio-group toggle-group>
+  <ion-list>
     <ion-item *ngFor="let workspace of foundWorkspaces">
-
       <button
         [color]="currentWorkspace_orNot(workspace.id) ? 'primary' : 'light'"
         (click)="setCurrentWorkspace(workspace.id)"
@@ -34,30 +33,26 @@
         <ion-icon [name]="currentWorkspace_orNot(workspace.id) ? 'checkmark' : 'star'"></ion-icon>
       </button>
 
-      <ion-label *ngIf='!workspaceEditOrNot(workspace.id)'>{{ workspace.title }}</ion-label>
+      <div *ngIf='!workspaceEditOrNot(workspace.id)'>
+        {{ workspace.title }}
+      </div>
 
-      <form item-end [formGroup]="formEditWorkspace" *ngIf='workspaceEditOrNot(workspace.id)'>
-        <ion-input
-          [(ngModel)]="edit_workspace.titleField"
+      <form item-content [formGroup]="formEditWorkspace" *ngIf='workspaceEditOrNot(workspace.id)'>
+        <ion-input type="text" autofocus
           formControlName="edit_title"
-          type="text" autofocus placeholder="New title"
+          [(ngModel)]="edit_workspace.titleField"
         >
         </ion-input>
 
-        <button
+        <button ion-button
           (click)="updateWorkspace(workspace.id)"
           [disabled]="formEditWorkspace.invalid"
-          ion-button
         >
-          <ion-icon
-            name="checkbox-outline"
-          >
-          </ion-icon>
+          <ion-icon name="checkbox-outline"></ion-icon>
         </button>
 
-        <button
+        <button ion-button
           (click)="exitEditWorkspace()"
-          ion-button
         >
           <ion-icon name="md-close"></ion-icon>
         </button>
