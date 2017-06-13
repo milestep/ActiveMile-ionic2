@@ -5,15 +5,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { Network } from '@ionic-native/network';
 
 import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
+import { StorageProvider } from '../providers/storage/storage';
+import { NetworkInfoProvider } from '../providers/network-info/network-info';
 import { LoadingCtrl } from '../providers/loading/loading';
 import { AlertCtrl } from '../providers/alert/alert';
-import { StorageProvider } from '../providers/storage/storage';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { StorageProvider } from '../providers/storage/storage';
     WorkspaceProvider,
     LoadingCtrl,
     AlertCtrl,
-    StorageProvider
+    StorageProvider,
+    Network,
+    NetworkInfoProvider
   ]
 })
 export class AppModule {}
