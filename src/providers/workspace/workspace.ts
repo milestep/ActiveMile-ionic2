@@ -21,7 +21,6 @@ export class WorkspaceProvider {
               public storage: StorageProvider) {
 
     this.storage.init().then((value)=>{
-      this.storage.getToken();
       this.TOKEN = this.storage.getToken()
 
       this.HEADERS = CONFIG.HEADERS

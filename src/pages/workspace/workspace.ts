@@ -1,13 +1,9 @@
-import { Component }                            from '@angular/core';
-import { IonicPage, NavController, NavParams }  from 'ionic-angular';
-import { FormBuilder, Validators }              from '@angular/forms';
+import { Component }                from '@angular/core';
+import { IonicPage}                 from 'ionic-angular';
+import { FormBuilder, Validators }  from '@angular/forms';
 
 import { WorkspaceProvider }  from '../../providers/workspace/workspace';
-import { LoadingCtrl }        from '../../providers/loading/loading';
-import { AuthProvider }       from '../../providers/auth/auth';
 import { StorageProvider }    from '../../providers/storage/storage';
-
-import { LoginPage }          from '../login/login';
 
 @IonicPage()
 @Component({
@@ -28,11 +24,7 @@ export class WorkspacePage {
   };
 
   constructor(
-    public loadingCtrl: LoadingCtrl,
-    public navCtrl: NavController,
-    public navParams: NavParams,
     public workspace: WorkspaceProvider,
-    public auth: AuthProvider,
     public _form: FormBuilder,
     public storage: StorageProvider) {
 
@@ -46,12 +38,15 @@ export class WorkspacePage {
 
     storage.init().then((value)=>{
       this.currentWorkspace = storage.getCurrentWorkspace()
-      this.checkWorkspaceExistenz()
+      this.getWorkspaces()
     });
+  }
 
+  getWorkspaces() {
     this.workspace.getWorkspaces().subscribe(
       res => {
         this.foundWorkspaces = res;
+        this.checkWorkspaceExistenz()
       },
       error => {
         console.log("error", error)
@@ -181,10 +176,11 @@ export class WorkspacePage {
     }
   }
 
-  submitAuthExit() {
-    this.auth.exit().then((result) => {
-      this.loadingCtrl.showLoader("Exit...");
-      this.navCtrl.setRoot(LoginPage);
-    })
+  doRefresh(refresher) {
+    this.getWorkspaces()
+
+    setTimeout(() => {
+      refresher.complete();
+    }, 1000);
   }
 }
