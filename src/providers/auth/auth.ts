@@ -33,8 +33,4 @@ export class AuthProvider {
   private catchError(error: any) {
     return Observable.throw(error.message || error);
   }
-
-  exit() {
-    return this.storage.deleteToken()
-  }
 }

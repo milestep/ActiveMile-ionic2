@@ -1,1 +1,27 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]='myMenu' id='menu' side='left'>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons start menuClose="left" (click)="itemSelected('Logout')">
+        <button ion-button icon-only>
+          <ion-icon name="log-out">Logout</ion-icon>
+        </button>
+      </ion-buttons>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list >
+      <ion-item>
+        <button ion-item menuClose="left"
+          *ngFor="let item of listMenu"
+          (click)="itemSelected(item.name)"
+        >
+          <ion-icon name='{{ item.icon }}'></ion-icon>
+          {{ item.name }}
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav #myMenu [root]="rootPage"></ion-nav>

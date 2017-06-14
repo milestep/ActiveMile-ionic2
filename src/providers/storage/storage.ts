@@ -6,11 +6,7 @@ export class StorageProvider {
   token:any;
   workspace_id:any;
 
-  constructor(private storage:Storage) {
-    storage.get('token').then((token) => {
-      this.token = token;
-    });
-  }
+  constructor(private storage:Storage) {}
 
   init(){
     let promiseList: Promise<any>[] = [];
@@ -31,16 +27,16 @@ export class StorageProvider {
   }
 
   // Token
+  getToken(){
+    return this.token
+  }
+
   setToken(token) {
     this.storage.set('token', token)
   }
 
-  deleteToken() {
+  removeToken() {
     return this.storage.remove("token")
-  }
-
-  getToken(){
-    return this.token
   }
 
   // Workspace
@@ -48,11 +44,11 @@ export class StorageProvider {
     return this.workspace_id
   }
 
-  deleteCurrentWorkspace() {
-    return this.storage.remove("workspace_id")
-  }
-
   setCurrentWorkspace(id) {
     this.storage.set('workspace_id', id)
+  }
+
+  deleteCurrentWorkspace() {
+    return this.storage.remove("workspace_id")
   }
 }

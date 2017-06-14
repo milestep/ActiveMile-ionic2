@@ -1,13 +1,23 @@
 <ion-header>
   <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
     <ion-title>Workspace</ion-title>
-    <button (click)="submitAuthExit()" ion-button>Exit</button>
-    <ion-label *ngIf='currentWorkspace' item-end>{{ currentWorkspace }}</ion-label>
-    <ion-label *ngIf='!currentWorkspace' item-end>Виберіть Workspace</ion-label>
+
+    <ion-buttons end>
+        <ion-label *ngIf='currentWorkspace'>{{ currentWorkspace }}</ion-label>
+        <ion-label *ngIf='!currentWorkspace'>Виберіть Workspace</ion-label>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-grid>
     <form [formGroup]="formWorkspace">
       <ion-row>
