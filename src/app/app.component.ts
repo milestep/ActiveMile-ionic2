@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
-
+import { Platform, App } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -20,6 +19,7 @@ export class MyApp {
   listMenu:any;
 
   constructor(
+    protected app: App,
     platform: Platform,
     statusBar: StatusBar,
     splashScreen: SplashScreen,
@@ -65,6 +65,7 @@ export class MyApp {
       this.storage.removeToken().then((result) => {
         this.loadingCtrl.showLoader("Exit...");
         this.rootPage = LoginPage;
+        this.app.getRootNav().setRoot(LoginPage);
       })
     } else if (i === "Workspaces") {
       this.rootPage = WorkspacePage
