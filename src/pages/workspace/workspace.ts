@@ -46,7 +46,7 @@ export class WorkspacePage {
     this.workspace.getWorkspaces().subscribe(
       res => {
         this.foundWorkspaces = res;
-        this.checkWorkspaceExistenz()
+        this.checkCurrentWorkspaceExistenz()
       },
       error => {
         console.log("error", error)
@@ -54,7 +54,7 @@ export class WorkspacePage {
     );
   }
 
-  checkWorkspaceExistenz() {
+  checkCurrentWorkspaceExistenz() {
     let bool = false
     for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
       if (this.foundWorkspaces[i].id === this.currentWorkspace) {

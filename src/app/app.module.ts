@@ -10,6 +10,7 @@ import { Network } from '@ionic-native/network';
 import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
+import { ArticlePage } from '../pages/article/article';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
 import { StorageProvider } from '../providers/storage/storage';
@@ -21,7 +22,8 @@ import { AlertCtrl } from '../providers/alert/alert';
   declarations: [
     MyApp,
     LoginPage,
-    WorkspacePage
+    WorkspacePage,
+    ArticlePage
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,8 @@ import { AlertCtrl } from '../providers/alert/alert';
   entryComponents: [
     MyApp,
     LoginPage,
-    WorkspacePage
+    WorkspacePage,
+    ArticlePage
   ],
   providers: [
     StatusBar,
