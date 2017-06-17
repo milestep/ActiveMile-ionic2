@@ -1,61 +1,67 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { Observable }       from 'rxjs/Observable';
+import { Observable }     from 'rxjs/Observable';
 
 import { StorageProvider }  from '../../providers/storage/storage';
 
 import { CONFIG }           from '../../app/config';
 
 @Injectable()
-export class WorkspaceProvider {
-  private URL = `${CONFIG.BASE_URL}/v1/workspaces`;
+export class ArticleProvider {
+  private URL = `${CONFIG.BASE_URL}/v1/articles`;
   private TOKEN:any;
   private OPTIONS:any;
+  private currentWorkspace:any;
 
   constructor(public http: Http,
               public storage: StorageProvider) {
 
     this.storage.init().then((value)=>{
       this.TOKEN = this.storage.getToken()
+      this.currentWorkspace = storage.getCurrentWorkspace()
 
       this.OPTIONS = CONFIG.OPTIONS
       this.OPTIONS.headers.set('Authorization', 'Bearer ' + this.TOKEN);
+      this.OPTIONS.headers.set('workspace-id', this.currentWorkspace);
     });
   }
 
-  getWorkspaces() {
-    return this.http.get(this.URL, CONFIG.OPTIONS)
+  getArticles() {
+    return this.http.get(this.URL, this.OPTIONS)
     .do((res: Response) => {})
     .map(this.extractData)
     .catch(this.catchError);
   }
 
-  createWorkspace(body) {
+  createArticle(body) {
     return this.http.post(this.URL, body, this.OPTIONS)
     .do((res: Response) => {})
     .map(this.extractData)
     .catch(this.catchError);
   }
 
-  updateWorkspace(id, body) {
+  updateArticle(id, body) {
     return this.http.put(`${this.URL}/${id}`, body, this.OPTIONS)
     .do((res: Response) => {})
     .map(this.extractData)
     .catch(this.catchError);
   }
 
-  deleteWorkspace(id) {
+  deleteArticle(id) {
     return this.http.delete(`${this.URL}/${id}`, this.OPTIONS)
     .do((res: Response) => {})
     .map(this.extractData)
     .catch(this.catchError);
   }
 
-  setCurrentWorkspace(id) {
-    this.storage.setCurrentWorkspace(id)
+  setCurrentWorkspaceInProvider(id) {
+    if (this.currentWorkspace != id) {
+      this.currentWorkspace = id
+      this.OPTIONS.headers.set('workspace-id', this.currentWorkspace)
+    }
   }
 
   private extractData(res: Response) {

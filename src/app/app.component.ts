@@ -41,7 +41,11 @@ export class MyApp {
 
     this.storage.init().then((value)=>{
       if (this.storage.getToken()) {
-        this.rootPage = WorkspacePage
+        if (this.checkCurrentWorkspaceExistenz()) {
+          this.rootPage = ArticlePage
+        } else {
+          this.rootPage = WorkspacePage
+        }
       } else {
         this.rootPage = LoginPage
       }

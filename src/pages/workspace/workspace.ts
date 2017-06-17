@@ -148,6 +148,7 @@ export class WorkspacePage {
       res => {
         if (id === this.currentWorkspace) {
           this.currentWorkspace = false
+          this.storage.deleteCurrentWorkspace()
         }
 
         for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
