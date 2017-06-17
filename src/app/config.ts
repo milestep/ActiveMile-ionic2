@@ -14,6 +14,5 @@ if (window.location.origin === "http://localhost:8100") {
 export const CONFIG  = {
   BASE_URL: BASE_URL,
   STRINGIFIED_PARAMS: STRINGIFIED_PARAMS,
-  HEADERS: headers,
   OPTIONS: new RequestOptions({ headers: headers })
 }

@@ -8,8 +8,9 @@ import { StorageProvider }    from '../providers/storage/storage';
 import { AlertCtrl }            from '../providers/alert/alert';
 import { LoadingCtrl }        from '../providers/loading/loading';
 
-import { WorkspacePage } from '../pages/workspace/workspace';
 import { LoginPage } from '../pages/login/login';
+import { WorkspacePage } from '../pages/workspace/workspace';
+import { ArticlePage } from '../pages/article/article';
 
 @Component({
   templateUrl: 'app.html'
@@ -36,18 +37,16 @@ export class MyApp {
       });
     }
 
-    this.listMenu = [
-      {icon: 'home', name: 'Workspaces'},
-      {icon: 'clipboard', name: 'Articles'},
-      {icon: 'contacts', name: 'Counterparties'}
-    ];
+    this.initializationMenu()
 
     this.storage.init().then((value)=>{
-      let token = this.storage.getToken()
-
-      if (token) {
-        this.rootPage = WorkspacePage
-      } else if (!token) {
+      if (this.storage.getToken()) {
+        if (this.checkCurrentWorkspaceExistenz()) {
+          this.rootPage = ArticlePage
+        } else {
+          this.rootPage = WorkspacePage
+        }
+      } else {
         this.rootPage = LoginPage
       }
     });
@@ -60,15 +59,37 @@ export class MyApp {
     });
   }
 
-  itemSelected(i) {
-    if(i === "Logout"){
-      this.storage.removeToken().then((result) => {
-        this.loadingCtrl.showLoader("Exit...");
-        this.rootPage = LoginPage;
-        this.app.getRootNav().setRoot(LoginPage);
-      })
-    } else if (i === "Workspaces") {
-      this.rootPage = WorkspacePage
+  initializationMenu() {
+    this.listMenu = [
+      {icon: 'home', name: 'Workspaces'},
+      {icon: 'clipboard', name: 'Articles'},
+      {icon: 'contacts', name: 'Counterparties'}
+    ];
+  }
+
+  checkCurrentWorkspaceExistenz() {
+    if (this.storage.getCurrentWorkspace()) {
+      return true
+    } else {
+      this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
+      return false
     }
+  }
+
+  itemSelected(i) {
+    this.storage.init().then((value)=>{
+      if(i === "Logout"){
+        this.storage.removeToken().then((result) => {
+          this.loadingCtrl.showLoader("Exit...");
+          this.app.getRootNav().setRoot(LoginPage);
+        })
+      } else if (i === "Workspaces") {
+        this.app.getRootNav().setRoot(WorkspacePage);
+      } else if (i === "Articles") {
+        if (this.checkCurrentWorkspaceExistenz()) {
+          this.app.getRootNav().setRoot(ArticlePage);
+        }
+      }
+    });
   }
 }

@@ -10,8 +10,12 @@ import { Network } from '@ionic-native/network';
 import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
+import { ArticlePage } from '../pages/article/article';
+import { ArticleAddPage } from '../pages/article-add/article-add';
+import { ArticleEditPage } from '../pages/article-edit/article-edit';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
+import { ArticleProvider } from '../providers/article/article';
 import { StorageProvider } from '../providers/storage/storage';
 import { NetworkInfoProvider } from '../providers/network-info/network-info';
 import { LoadingCtrl } from '../providers/loading/loading';
@@ -21,7 +25,10 @@ import { AlertCtrl } from '../providers/alert/alert';
   declarations: [
     MyApp,
     LoginPage,
-    WorkspacePage
+    WorkspacePage,
+    ArticlePage,
+    ArticleAddPage,
+    ArticleEditPage
   ],
   imports: [
     BrowserModule,
@@ -33,7 +40,10 @@ import { AlertCtrl } from '../providers/alert/alert';
   entryComponents: [
     MyApp,
     LoginPage,
-    WorkspacePage
+    WorkspacePage,
+    ArticlePage,
+    ArticleAddPage,
+    ArticleEditPage
   ],
   providers: [
     StatusBar,
@@ -45,7 +55,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     AlertCtrl,
     StorageProvider,
     Network,
-    NetworkInfoProvider
+    NetworkInfoProvider,
+    ArticleProvider
   ]
 })
 export class AppModule {}

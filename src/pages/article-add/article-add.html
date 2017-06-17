@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Add article
+    </ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="formArticle">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Title</ion-label>
+        <ion-input type="text" formControlName="title" [(ngModel)]="new_article.title"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select interface="popover" [(ngModel)]="new_article.type">
+        <ion-option value="Cost" selected="true">Cost</ion-option>
+        <ion-option value="Revenue">Revenue</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <button full ion-button [disabled]="formArticle.invalid" (click)="createArticle()">Save</button>
+</ion-content>

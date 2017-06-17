@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-title>Article</ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="newArticle()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+
+    <ion-buttons end>
+        <ion-label *ngIf='currentWorkspace'>{{ currentWorkspace }}</ion-label>
+        <ion-label *ngIf='!currentWorkspace'>Виберіть Workspace</ion-label>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-segment [(ngModel)]="segment_now" color="primary">
+    <ion-segment-button value="Cost">
+      Cost
+    </ion-segment-button>
+    <ion-segment-button value="Revenue">
+      Revenue
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-item *ngIf="!foundArticles.length">
+      No articles
+  </ion-item>
+
+  <div [ngSwitch]="segment_now">
+    <ion-list *ngSwitchCase="'Cost'">
+      <ion-item *ngFor="let article of costArticles">
+        <div>
+          {{ article.title }}
+        </div>
+
+        <ion-icon name="ios-create-outline" item-end (click)="editArticle(article)"></ion-icon>
+
+        <ion-icon name="ios-close-circle-outline" item-end
+          (click)="deleteArticle(article.id)">
+        </ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'Revenue'">
+      <ion-item *ngFor="let article of revenueArticles">
+        <div>
+          {{ article.title }}
+        </div>
+
+        <ion-icon name="ios-create-outline" item-end (click)="editArticle(article)"></ion-icon>
+
+        <ion-icon name="ios-close-circle-outline" item-end
+          (click)="deleteArticle(article.id)">
+        </ion-icon>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
