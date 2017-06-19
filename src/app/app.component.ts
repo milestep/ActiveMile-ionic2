@@ -11,6 +11,7 @@ import { LoadingCtrl }        from '../providers/loading/loading';
 import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
 import { ArticlePage } from '../pages/article/article';
+import { CounterpartyPage } from '../pages/counterparty/counterparty';
 
 @Component({
   templateUrl: 'app.html'
@@ -18,6 +19,7 @@ import { ArticlePage } from '../pages/article/article';
 export class MyApp {
   rootPage:any;
   listMenu:any;
+  currentWorkspace:any;
 
   constructor(
     protected app: App,
@@ -39,10 +41,15 @@ export class MyApp {
 
     this.initializationMenu()
 
-    this.storage.init().then((value)=>{
-      if (this.storage.getToken()) {
-        if (this.checkCurrentWorkspaceExistenz()) {
-          this.rootPage = ArticlePage
+    storage.init().then((value)=>{
+      if (storage.getToken()) {
+        let result = this.storage.getCurrentWorkspace()
+
+        if (result) {
+          if (this.currentWorkspace != result) {
+            this.currentWorkspace = result
+          }
+          this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace});
         } else {
           this.rootPage = WorkspacePage
         }
@@ -67,15 +74,6 @@ export class MyApp {
     ];
   }
 
-  checkCurrentWorkspaceExistenz() {
-    if (this.storage.getCurrentWorkspace()) {
-      return true
-    } else {
-      this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
-      return false
-    }
-  }
-
   itemSelected(i) {
     this.storage.init().then((value)=>{
       if(i === "Logout"){
@@ -83,11 +81,23 @@ export class MyApp {
           this.loadingCtrl.showLoader("Exit...");
           this.app.getRootNav().setRoot(LoginPage);
         })
-      } else if (i === "Workspaces") {
-        this.app.getRootNav().setRoot(WorkspacePage);
-      } else if (i === "Articles") {
-        if (this.checkCurrentWorkspaceExistenz()) {
-          this.app.getRootNav().setRoot(ArticlePage);
+      } else {
+        let result = this.storage.getCurrentWorkspace()
+
+        if (result) {
+          if (this.currentWorkspace != result) {
+            this.currentWorkspace = result
+          }
+
+          if (i === "Workspaces") {
+            this.app.getRootNav().setRoot(WorkspacePage);
+          } else if (i === "Articles") {
+            this.app.getRootNav().setRoot(ArticlePage, {currentWorkspace: this.currentWorkspace});
+          } else if (i === "Counterparties") {
+            this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace});
+          }
+        } else {
+          this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
         }
       }
     });

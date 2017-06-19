@@ -13,9 +13,11 @@ import { WorkspacePage } from '../pages/workspace/workspace';
 import { ArticlePage } from '../pages/article/article';
 import { ArticleAddPage } from '../pages/article-add/article-add';
 import { ArticleEditPage } from '../pages/article-edit/article-edit';
+import { CounterpartyPage } from '../pages/counterparty/counterparty';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
 import { ArticleProvider } from '../providers/article/article';
+import { CounterpartyProvider } from '../providers/counterparty/counterparty';
 import { StorageProvider } from '../providers/storage/storage';
 import { NetworkInfoProvider } from '../providers/network-info/network-info';
 import { LoadingCtrl } from '../providers/loading/loading';
@@ -28,7 +30,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     WorkspacePage,
     ArticlePage,
     ArticleAddPage,
-    ArticleEditPage
+    ArticleEditPage,
+    CounterpartyPage
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     WorkspacePage,
     ArticlePage,
     ArticleAddPage,
-    ArticleEditPage
+    ArticleEditPage,
+    CounterpartyPage
   ],
   providers: [
     StatusBar,
@@ -56,7 +60,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     StorageProvider,
     Network,
     NetworkInfoProvider,
-    ArticleProvider
+    ArticleProvider,
+    CounterpartyProvider
   ]
 })
 export class AppModule {}
