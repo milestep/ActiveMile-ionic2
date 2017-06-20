@@ -30,5 +30,12 @@
     </ion-item>
   </ion-list>
 
+  <ion-list>
+    <ion-item>
+      <ion-label>Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="new_edit_counterparty.date"></ion-datetime>
+    </ion-item>
+  </ion-list>
+
   <button full ion-button [disabled]="formCounterparty.invalid" (click)="createUpdateCounterparty()">Save</button>
 </ion-content>

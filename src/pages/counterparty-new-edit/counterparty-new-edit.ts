@@ -17,7 +17,7 @@ export class CounterpartyNewEditPage {
     id: '',
     name: '',
     type: 'Client',
-    date: Date(),
+    date: ''
   };
 
   constructor(
@@ -35,11 +35,25 @@ export class CounterpartyNewEditPage {
       this.new_edit_counterparty.type = get_counterparty.type
       this.new_edit_counterparty.date = get_counterparty.date
       this.new_edit_counterparty.status = 'edit'
+    } else {
+      this.new_edit_counterparty.date = this.formatDate(new Date())
     }
 
     this.formCounterparty = this._form.group({
       "name":["", Validators.required]
     })
+  }
+
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   createUpdateCounterparty(){
