@@ -14,6 +14,7 @@ import { ArticlePage } from '../pages/article/article';
 import { ArticleAddPage } from '../pages/article-add/article-add';
 import { ArticleEditPage } from '../pages/article-edit/article-edit';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
+import { CounterpartyNewEditPage } from '../pages/counterparty-new-edit/counterparty-new-edit';
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
 import { ArticleProvider } from '../providers/article/article';
@@ -31,7 +32,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     ArticlePage,
     ArticleAddPage,
     ArticleEditPage,
-    CounterpartyPage
+    CounterpartyPage,
+    CounterpartyNewEditPage
   ],
   imports: [
     BrowserModule,
@@ -47,7 +49,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     ArticlePage,
     ArticleAddPage,
     ArticleEditPage,
-    CounterpartyPage
+    CounterpartyPage,
+    CounterpartyNewEditPage
   ],
   providers: [
     StatusBar,
