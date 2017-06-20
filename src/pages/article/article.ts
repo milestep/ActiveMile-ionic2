@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController } from 'ionic-angular';
+import { IonicPage, ModalController, NavParams } from 'ionic-angular';
 
 import { ArticleAddPage } from '../article-add/article-add';
 import { ArticleEditPage } from '../article-edit/article-edit';
@@ -21,11 +21,12 @@ export class ArticlePage {
 
   constructor(
     public modalCtrl: ModalController,
+    public navParams: NavParams,
     public storage: StorageProvider,
     public article: ArticleProvider) {
 
     storage.init().then((value)=>{
-      this.currentWorkspace = storage.getCurrentWorkspace()
+      this.currentWorkspace = navParams.get('currentWorkspace');
       this.article.setCurrentWorkspaceInProvider(this.currentWorkspace)
       this.getArticles()
     });

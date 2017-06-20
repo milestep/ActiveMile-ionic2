@@ -36,6 +36,7 @@ export class StorageProvider {
   }
 
   removeToken() {
+    this.storage.remove("workspace_id")
     return this.storage.remove("token")
   }
 

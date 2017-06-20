@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Counterparty
+    </ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="formCounterparty">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Name</ion-label>
+        <ion-input autofocus type="text" formControlName="name" [(ngModel)]="new_edit_counterparty.name"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select interface="popover" [(ngModel)]="new_edit_counterparty.type">
+        <ion-option value="Client" selected="true">Client</ion-option>
+        <ion-option value="Vendor">Vendor</ion-option>
+        <ion-option value="Other">Other</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="new_edit_counterparty.date"></ion-datetime>
+    </ion-item>
+  </ion-list>
+
+  <button full ion-button [disabled]="formCounterparty.invalid" (click)="createUpdateCounterparty()">Save</button>
+</ion-content>
