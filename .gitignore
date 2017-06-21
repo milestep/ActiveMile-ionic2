@@ -22,7 +22,10 @@ node_modules/
 tmp/
 temp/
 hooks/
-platforms/
+platforms/platforms.json
+platforms/android/*
+!platforms/android/build*
+!platforms/android/.gitignore
 plugins/
 plugins/android.json
 plugins/ios.json
