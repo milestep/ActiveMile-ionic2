@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Register
+    </ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label>Date *</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="new_edit_register.date"></ion-datetime>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Article *</ion-label>
+      <ion-select interface="popover"
+        [style.color]="new_edit_register.article_type === 'Cost' ? 'red' : 'green'"
+        [(ngModel)]="new_edit_register.article_title"
+      >
+        <ion-option selected="true"
+          *ngFor="let article of foundArticles"
+          (ionSelect)="ionSelect(article, 'article')"
+        >{{article.title}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Counterparty *</ion-label>
+      <ion-select interface="popover"
+        [style.color]="new_edit_register.counterparty_type === 'Client' ? 'green' : 'blue'"
+        [(ngModel)]="new_edit_register.counterparty_name"
+      >
+        <ion-option selected="true"
+          *ngFor="let counterparty of foundCounterparties"
+          (ionSelect)="ionSelect(counterparty, 'counterparty')"
+        >{{counterparty.name}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <form [formGroup]="formRegister">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Value *</ion-label>
+        <ion-input type="number" formControlName="value" [(ngModel)]="new_edit_register.value"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Note</ion-label>
+      <ion-input type="text" [(ngModel)]="new_edit_register.note"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <button full ion-button [disabled]="formRegister.invalid" (click)="createUpdateCounterparty()">Save</button>
+</ion-content>

@@ -12,6 +12,7 @@ import { LoginPage } from '../pages/login/login';
 import { WorkspacePage } from '../pages/workspace/workspace';
 import { ArticlePage } from '../pages/article/article';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
+import { RegisterPage } from '../pages/register/register';
 
 @Component({
   templateUrl: 'app.html'
@@ -49,7 +50,7 @@ export class MyApp {
           if (this.currentWorkspace != result) {
             this.currentWorkspace = result
           }
-          this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace});
+          this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace});
         } else {
           this.rootPage = WorkspacePage
         }
@@ -70,7 +71,9 @@ export class MyApp {
     this.listMenu = [
       {icon: 'home', name: 'Workspaces'},
       {icon: 'clipboard', name: 'Articles'},
-      {icon: 'contacts', name: 'Counterparties'}
+      {icon: 'contacts', name: 'Counterparties'},
+      {icon: 'md-paper', name: 'Registers'},
+      {icon: 'ios-pie-outline', name: 'Reports'}
     ];
   }
 
@@ -95,6 +98,8 @@ export class MyApp {
             this.app.getRootNav().setRoot(ArticlePage, {currentWorkspace: this.currentWorkspace});
           } else if (i === "Counterparties") {
             this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace});
+          } else if (i === "Registers") {
+            this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace});
           }
         } else {
           this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
