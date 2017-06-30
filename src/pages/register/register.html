@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-title>Register</ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="newRegister()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <ion-label>{{ currentWorkspace }}</ion-label>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item>
+      <ion-select interface="popover"
+        [(ngModel)]="Register.select_year"
+      >
+        <ion-option
+          *ngFor="let year of Register.oll_years"
+          (ionSelect)="select_filter('year', year)"
+        >{{year}}</ion-option>
+      </ion-select>
+
+      <ion-select interface="popover" [(ngModel)]="Register.select_month">
+        <ion-option
+          *ngFor="let month of months"
+          [disabled]="monthIsDisabled(month) ? 'false' : 'true'"
+          (ionSelect)="select_filter('month', month)"
+        >{{month}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <div item-start>
+        Date
+      </div>
+      <div item-start>
+        Article
+      </div>
+      <div item-start>
+        Counterparty
+      </div>
+      <div item-start>
+        Value
+      </div>
+      <div item-start>
+        Notes
+      </div>
+    </ion-item>
+
+    <ion-item *ngFor="let register of Register.filter_by_year_and_month">
+      <div item-start>
+        {{ register.date }}
+      </div>
+
+      <div item-start [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
+        {{ register.article_title }}
+      </div>
+
+      <div item-start [style.color]="register.counterparty_type === 'Client' ? 'green' : 'blue'">
+        {{ register.counterparty_name }}
+      </div>
+
+      <div item-start>
+        {{ register.value }}
+      </div>
+
+      <div item-start>
+        {{ register.note }}
+      </div>
+
+      <ion-icon name="ios-create-outline" item-end (click)="editRegister(register)"></ion-icon>
+
+      <ion-icon name="ios-close-circle-outline" item-end
+        (click)="deleteRegister(register.id)">
+      </ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

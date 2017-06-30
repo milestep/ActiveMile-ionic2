@@ -15,10 +15,15 @@ import { ArticleAddPage } from '../pages/article-add/article-add';
 import { ArticleEditPage } from '../pages/article-edit/article-edit';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
 import { CounterpartyNewEditPage } from '../pages/counterparty-new-edit/counterparty-new-edit';
+import { RegisterPage } from '../pages/register/register';
+import { RegisterNewEditPage } from '../pages/register-new-edit/register-new-edit';
+
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
 import { ArticleProvider } from '../providers/article/article';
 import { CounterpartyProvider } from '../providers/counterparty/counterparty';
+import { RegisterProvider } from '../providers/register/register';
+
 import { StorageProvider } from '../providers/storage/storage';
 import { NetworkInfoProvider } from '../providers/network-info/network-info';
 import { LoadingCtrl } from '../providers/loading/loading';
@@ -33,7 +38,9 @@ import { AlertCtrl } from '../providers/alert/alert';
     ArticleAddPage,
     ArticleEditPage,
     CounterpartyPage,
-    CounterpartyNewEditPage
+    CounterpartyNewEditPage,
+    RegisterPage,
+    RegisterNewEditPage
   ],
   imports: [
     BrowserModule,
@@ -50,7 +57,9 @@ import { AlertCtrl } from '../providers/alert/alert';
     ArticleAddPage,
     ArticleEditPage,
     CounterpartyPage,
-    CounterpartyNewEditPage
+    CounterpartyNewEditPage,
+    RegisterPage,
+    RegisterNewEditPage
   ],
   providers: [
     StatusBar,
@@ -64,7 +73,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     Network,
     NetworkInfoProvider,
     ArticleProvider,
-    CounterpartyProvider
+    CounterpartyProvider,
+    RegisterProvider
   ]
 })
 export class AppModule {}
