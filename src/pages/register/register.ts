@@ -293,6 +293,10 @@ export class RegisterPage {
     return false
   }
 
+  getDay(date) {
+   return new Date(date).getDay();
+  }
+
   getArticlesAndCounterparties() {
     this.article.getArticles().subscribe(
       res => {

@@ -42,51 +42,45 @@
     </ion-item>
   </ion-list>
 
-  <ion-list>
-    <ion-item>
-      <div item-start>
-        Date
-      </div>
-      <div item-start>
-        Article
-      </div>
-      <div item-start>
-        Counterparty
-      </div>
-      <div item-start>
-        Value
-      </div>
-      <div item-start>
-        Notes
-      </div>
-    </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-1>Day</ion-col>
+      <ion-col col-2>Article</ion-col>
+      <ion-col col-3>Counterparty</ion-col>
+      <ion-col col-2>Value</ion-col>
+      <ion-col col-2>Notes</ion-col>
+    </ion-row>
+  </ion-grid>
 
-    <ion-item *ngFor="let register of Register.filter_by_year_and_month">
-      <div item-start>
-        {{ register.date }}
-      </div>
+  <ion-grid *ngFor="let register of Register.filter_by_year_and_month">
+    <ion-row>
+      <ion-col col-1>
+        {{ getDay(register.date) }}
+      </ion-col>
 
-      <div item-start [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
+      <ion-col col-2 [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
         {{ register.article_title }}
-      </div>
+      </ion-col>
 
-      <div item-start [style.color]="register.counterparty_type === 'Client' ? 'green' : 'blue'">
+      <ion-col col-3 [style.color]="register.counterparty_type === 'Client' ? 'green' : 'blue'">
         {{ register.counterparty_name }}
-      </div>
+      </ion-col>
 
-      <div item-start>
+      <ion-col col-2>
         {{ register.value }}
-      </div>
+      </ion-col>
 
-      <div item-start>
+      <ion-col col-2>
         {{ register.note }}
-      </div>
+      </ion-col>
 
-      <ion-icon name="ios-create-outline" item-end (click)="editRegister(register)"></ion-icon>
+      <ion-col col-2>
+        <ion-icon name="ios-create-outline" item-end (click)="editRegister(register)"></ion-icon>
 
-      <ion-icon name="ios-close-circle-outline" item-end
-        (click)="deleteRegister(register.id)">
-      </ion-icon>
-    </ion-item>
-  </ion-list>
+        <ion-icon name="ios-close-circle-outline" item-end
+          (click)="deleteRegister(register.id)">
+        </ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
