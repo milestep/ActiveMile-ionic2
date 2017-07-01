@@ -3,7 +3,6 @@ import { IonicPage, NavParams, ModalController } from 'ionic-angular';
 
 import { RegisterNewEditPage } from '../register-new-edit/register-new-edit';
 
-import { StorageProvider }  from '../../providers/storage/storage';
 import { ArticleProvider }  from '../../providers/article/article';
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
 import { RegisterProvider } from '../../providers/register/register';
@@ -33,15 +32,12 @@ export class RegisterPage {
     public modalCtrl: ModalController,
     public article: ArticleProvider,
     public counterparty: CounterpartyProvider,
-    public register: RegisterProvider,
-    public storage: StorageProvider) {
+    public register: RegisterProvider) {
 
-    storage.init().then((value)=>{
-      this.currentWorkspace = navParams.get('currentWorkspace');
-      this.register.setCurrentWorkspaceInProvider(this.currentWorkspace)
-      this.getArticlesAndCounterparties()
-      this.getRegisters()
-    });
+    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.foundArticles = navParams.get('foundArticles');
+    this.foundCounterparties = navParams.get('foundCounterparties');
+    this.getRegisters()
   }
 
   getRegisters() {
@@ -49,22 +45,23 @@ export class RegisterPage {
 
     this.register.getRegisters().subscribe(
       res => {
-        for (var i = res.length - 1; i >= 0; i--) {
-          let register = res[i]
+        if (res.length) {
+          for (var i = res.length - 1; i >= 0; i--) {
+            let register = res[i]
 
-          this.Register.foundRegisters.push({
-            id: register.id, date: register.date, value: register.value, note: register.note,
-            article_id: register.article_id, counterparty_id: register.counterparty_id,
-            article_title: this.getRegisterData('article_title', register.article_id),
-            article_type: this.getRegisterData('article_type', register.article_id),
-            counterparty_name: this.getRegisterData('counterparty_name', register.counterparty_id),
-            counterparty_type: this.getRegisterData('counterparty_type', register.counterparty_id)
-          })
+            this.Register.foundRegisters.push({
+              id: register.id, date: register.date, value: register.value, note: register.note,
+              article_id: register.article_id, counterparty_id: register.counterparty_id,
+              article_title: this.getRegisterData('article_title', register.article_id),
+              article_type: this.getRegisterData('article_type', register.article_id),
+              counterparty_name: this.getRegisterData('counterparty_name', register.counterparty_id),
+              counterparty_type: this.getRegisterData('counterparty_type', register.counterparty_id)
+            })
+          }
+
+          this.initialization_filter_years()
+          this.select_filter("year", this.Register.select_year)
         }
-
-
-        this.initialization_filter_years()
-        this.select_filter("year", this.Register.select_year)
       },
       error => {
         console.log("error", error)
@@ -86,6 +83,7 @@ export class RegisterPage {
           counterparty_type: res.counterparty.type
         })
 
+        this.initialization_filter_years()
         this.select_filter("year", this.Register.select_year)
       }
     });
@@ -112,6 +110,7 @@ export class RegisterPage {
           }
         }
 
+        this.initialization_filter_years()
         this.select_filter("year", this.Register.select_year)
       }
     });
@@ -129,6 +128,7 @@ export class RegisterPage {
           }
         }
 
+        this.initialization_filter_years()
         this.select_filter("year", this.Register.select_year)
       },
       error => {
