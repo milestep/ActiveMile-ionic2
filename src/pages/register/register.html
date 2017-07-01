@@ -21,7 +21,11 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
+  <ion-item *ngIf="!Register.foundRegisters.length">
+      No Registers
+  </ion-item>
+
+  <ion-list *ngIf="Register.foundRegisters.length">
     <ion-item>
       <ion-select interface="popover"
         [(ngModel)]="Register.select_year"
@@ -42,7 +46,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-grid>
+  <ion-grid *ngIf="Register.foundRegisters.length">
     <ion-row>
       <ion-col col-1>Day</ion-col>
       <ion-col col-2>Article</ion-col>

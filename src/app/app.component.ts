@@ -5,6 +5,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { NetworkInfoProvider }  from '../providers/network-info/network-info';
 import { StorageProvider }    from '../providers/storage/storage';
+import { ArticleProvider }  from '../providers/article/article';
+import { CounterpartyProvider } from '../providers/counterparty/counterparty';
+import { RegisterProvider } from '../providers/register/register';
+
 import { AlertCtrl }            from '../providers/alert/alert';
 import { LoadingCtrl }        from '../providers/loading/loading';
 
@@ -21,6 +25,8 @@ export class MyApp {
   rootPage:any;
   listMenu:any;
   currentWorkspace:any;
+  foundArticles:any;
+  foundCounterparties:any;
 
   constructor(
     protected app: App,
@@ -28,6 +34,9 @@ export class MyApp {
     statusBar: StatusBar,
     splashScreen: SplashScreen,
     public storage: StorageProvider,
+    public article: ArticleProvider,
+    public counterparty: CounterpartyProvider,
+    public register: RegisterProvider,
     public network_info: NetworkInfoProvider,
     public loadingCtrl: LoadingCtrl,
     public alertCtrl: AlertCtrl) {
@@ -40,20 +49,18 @@ export class MyApp {
       });
     }
 
-    this.initializationMenu()
+    this.listMenu = [
+      {icon: 'home', name: 'Workspaces'},
+      {icon: 'clipboard', name: 'Articles'},
+      {icon: 'contacts', name: 'Counterparties'},
+      {icon: 'md-paper', name: 'Registers'},
+      {icon: 'ios-pie-outline', name: 'Reports'}
+    ];
 
     storage.init().then((value)=>{
       if (storage.getToken()) {
-        let result = this.storage.getCurrentWorkspace()
-
-        if (result) {
-          if (this.currentWorkspace != result) {
-            this.currentWorkspace = result
-          }
-          this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace});
-        } else {
-          this.rootPage = WorkspacePage
-        }
+        this.rootPage = WorkspacePage
+        this.itemSelected('Registers')
       } else {
         this.rootPage = LoginPage
       }
@@ -67,16 +74,6 @@ export class MyApp {
     });
   }
 
-  initializationMenu() {
-    this.listMenu = [
-      {icon: 'home', name: 'Workspaces'},
-      {icon: 'clipboard', name: 'Articles'},
-      {icon: 'contacts', name: 'Counterparties'},
-      {icon: 'md-paper', name: 'Registers'},
-      {icon: 'ios-pie-outline', name: 'Reports'}
-    ];
-  }
-
   itemSelected(i) {
     this.storage.init().then((value)=>{
       if(i === "Logout"){
@@ -85,21 +82,62 @@ export class MyApp {
           this.app.getRootNav().setRoot(LoginPage);
         })
       } else {
-        let result = this.storage.getCurrentWorkspace()
+        let currentWorkspace = this.storage.getCurrentWorkspace()
 
-        if (result) {
-          if (this.currentWorkspace != result) {
-            this.currentWorkspace = result
+        if (currentWorkspace) {
+          if (this.currentWorkspace != currentWorkspace) {
+            this.currentWorkspace = currentWorkspace
+            this.article.setCurrentWorkspaceInProvider(this.currentWorkspace)
+            this.counterparty.setCurrentWorkspaceInProvider(this.currentWorkspace)
+            this.register.setCurrentWorkspaceInProvider(this.currentWorkspace)
           }
 
           if (i === "Workspaces") {
             this.app.getRootNav().setRoot(WorkspacePage);
           } else if (i === "Articles") {
-            this.app.getRootNav().setRoot(ArticlePage, {currentWorkspace: this.currentWorkspace});
+            this.article.getArticles().subscribe(
+              res => {
+                this.app.getRootNav().setRoot(ArticlePage, {currentWorkspace: this.currentWorkspace, foundArticles: res});
+              },
+              error => {
+                console.log("error", error)
+              }
+            );
           } else if (i === "Counterparties") {
-            this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace});
+            this.counterparty.getCounterparties().subscribe(
+              res => {
+                this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace, foundCounterparties: res});
+              },
+              error => {
+                console.log("error", error)
+              }
+            );
           } else if (i === "Registers") {
-            this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace});
+            this.article.getArticles().subscribe(
+              resArticle => {
+                if (resArticle.length) {
+                  this.counterparty.getCounterparties().subscribe(
+                    resCounterparty => {
+                      if (resCounterparty.length) {
+                        this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace, foundArticles: resArticle, foundCounterparties: resCounterparty});
+                      } else {
+                        this.alertCtrl.showAlert("Info", "Add counterparty", "OK")
+                        this.itemSelected("Counterparties")
+                      }
+                    },
+                    error => {
+                      console.log("error", error)
+                    }
+                  );
+                } else {
+                  this.alertCtrl.showAlert("Info", "Add article", "OK")
+                  this.itemSelected("Articles")
+                }
+              },
+              error => {
+                console.log("error", error)
+              }
+            );
           }
         } else {
           this.alertCtrl.showAlert("Info", "Choose workspace", "OK")

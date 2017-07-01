@@ -4,7 +4,6 @@ import { IonicPage, NavParams, ModalController } from 'ionic-angular';
 import { CounterpartyNewEditPage } from '../../pages/counterparty-new-edit/counterparty-new-edit';
 
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
-import { StorageProvider }  from '../../providers/storage/storage';
 
 @IonicPage()
 @Component({
@@ -22,14 +21,11 @@ export class CounterpartyPage {
   constructor(
     public modalCtrl: ModalController,
     public navParams: NavParams,
-    public counterparty: CounterpartyProvider,
-    public storage: StorageProvider) {
+    public counterparty: CounterpartyProvider) {
 
-    storage.init().then((value)=>{
-      this.currentWorkspace = navParams.get('currentWorkspace');
-      this.counterparty.setCurrentWorkspaceInProvider(this.currentWorkspace)
-      this.getCounterparties()
-    });
+    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.foundCounterparties = navParams.get('foundCounterparties');
+    this.filter()
   }
 
   getCounterparties() {

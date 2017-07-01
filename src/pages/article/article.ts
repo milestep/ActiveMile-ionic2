@@ -4,7 +4,6 @@ import { IonicPage, ModalController, NavParams } from 'ionic-angular';
 import { ArticleAddPage } from '../article-add/article-add';
 import { ArticleEditPage } from '../article-edit/article-edit';
 
-import { StorageProvider }    from '../../providers/storage/storage';
 import { ArticleProvider }  from '../../providers/article/article';
 
 @IonicPage()
@@ -22,14 +21,11 @@ export class ArticlePage {
   constructor(
     public modalCtrl: ModalController,
     public navParams: NavParams,
-    public storage: StorageProvider,
     public article: ArticleProvider) {
 
-    storage.init().then((value)=>{
-      this.currentWorkspace = navParams.get('currentWorkspace');
-      this.article.setCurrentWorkspaceInProvider(this.currentWorkspace)
-      this.getArticles()
-    });
+    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.foundArticles = navParams.get('foundArticles');
+    this.filter()
   }
 
   getArticles() {
