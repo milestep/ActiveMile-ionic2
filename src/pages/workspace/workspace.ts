@@ -1,5 +1,5 @@
 import { Component }                from '@angular/core';
-import { IonicPage}                 from 'ionic-angular';
+import { IonicPage, NavParams}                 from 'ionic-angular';
 import { FormBuilder, Validators }  from '@angular/forms';
 
 import { WorkspaceProvider }  from '../../providers/workspace/workspace';
@@ -12,7 +12,11 @@ import { StorageProvider }    from '../../providers/storage/storage';
 })
 export class WorkspacePage {
   public foundWorkspaces = [];
-  public currentWorkspace:any;
+  public workspaceData = {
+    currentId: false,
+    currentTitle: false,
+    foundWorkspaces: []
+  };
   public formWorkspace:any;
   public formEditWorkspace:any;
 
@@ -26,6 +30,7 @@ export class WorkspacePage {
   constructor(
     public workspace: WorkspaceProvider,
     public _form: FormBuilder,
+    public navParams: NavParams,
     public storage: StorageProvider) {
 
     this.formWorkspace = this._form.group({
@@ -36,37 +41,20 @@ export class WorkspacePage {
       "edit_title":["", Validators.required]
     })
 
-    storage.init().then((value)=>{
-      this.currentWorkspace = storage.getCurrentWorkspace()
-      this.getWorkspaces()
-    });
+    this.workspaceData.currentId = navParams.get('currentWorkspace');
+    this.workspaceData.currentTitle = navParams.get('currentWorkspaceTitle');
+    this.workspaceData.foundWorkspaces = navParams.get('foundWorkspaces');
   }
 
   getWorkspaces() {
     this.workspace.getWorkspaces().subscribe(
       res => {
-        this.foundWorkspaces = res;
-        this.checkCurrentWorkspaceExistenz()
+        this.workspaceData.foundWorkspaces = res;
       },
       error => {
         console.log("error", error)
       }
     );
-  }
-
-  checkCurrentWorkspaceExistenz() {
-    let bool = false
-    for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
-      if (this.foundWorkspaces[i].id === this.currentWorkspace) {
-        bool = true
-        break
-      }
-    }
-
-    if (!bool) {
-      this.currentWorkspace = false
-      this.storage.deleteCurrentWorkspace()
-    }
   }
 
   createWorkspace() {
@@ -78,7 +66,7 @@ export class WorkspacePage {
 
     this.workspace.createWorkspace(data).subscribe(
       res => {
-        this.foundWorkspaces.unshift({id: res.id, title: res.title, created_at: res.created_at, updated_at: res.updated_at})
+        this.workspaceData.foundWorkspaces.unshift({id: res.id, title: res.title, created_at: res.created_at, updated_at: res.updated_at})
         this.titleField = ""
       },
       error => {
@@ -107,9 +95,9 @@ export class WorkspacePage {
 
         this.workspace.updateWorkspace(id, data).subscribe(
           res => {
-            for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
-              if (this.foundWorkspaces[i].id === id) {
-                this.foundWorkspaces[i].title = this.edit_workspace.titleField
+            for (var i = this.workspaceData.foundWorkspaces.length - 1; i >= 0; i--) {
+              if (this.workspaceData.foundWorkspaces[i].id === id) {
+                this.workspaceData.foundWorkspaces[i].title = this.edit_workspace.titleField
                 break
               }
             }
@@ -127,10 +115,10 @@ export class WorkspacePage {
       // start inline edit
       this.edit_workspace.id = id
 
-      for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
-        if (this.foundWorkspaces[i].id === id) {
-          this.edit_workspace.titleField = this.foundWorkspaces[i].title
-          this.edit_workspace.title_old = this.foundWorkspaces[i].title
+      for (var i = this.workspaceData.foundWorkspaces.length - 1; i >= 0; i--) {
+        if (this.workspaceData.foundWorkspaces[i].id === id) {
+          this.edit_workspace.titleField = this.workspaceData.foundWorkspaces[i].title
+          this.edit_workspace.title_old = this.workspaceData.foundWorkspaces[i].title
           break
         }
       }
@@ -146,14 +134,14 @@ export class WorkspacePage {
   deleteWorkspace(id) {
     this.workspace.deleteWorkspace(id).subscribe(
       res => {
-        if (id === this.currentWorkspace) {
-          this.currentWorkspace = false
+        if (id === this.workspaceData.currentId) {
+          this.workspaceData.currentId = false
           this.storage.deleteCurrentWorkspace()
         }
 
-        for (var i = this.foundWorkspaces.length - 1; i >= 0; i--) {
-          if (this.foundWorkspaces[i].id === id) {
-            this.foundWorkspaces.splice(i, 1)
+        for (var i = this.workspaceData.foundWorkspaces.length - 1; i >= 0; i--) {
+          if (this.workspaceData.foundWorkspaces[i].id === id) {
+            this.workspaceData.foundWorkspaces.splice(i, 1)
             break
           }
         }
@@ -164,13 +152,14 @@ export class WorkspacePage {
     );
   }
 
-  setCurrentWorkspace(id) {
+  setCurrentWorkspace(id, title) {
     this.workspace.setCurrentWorkspace(id)
-    this.currentWorkspace = id
+    this.workspaceData.currentId = id
+    this.workspaceData.currentTitle = title
   }
 
   currentWorkspace_orNot(id) {
-    if (id === this.currentWorkspace) {
+    if (id === this.workspaceData.currentId) {
       return true
     } else {
       return false

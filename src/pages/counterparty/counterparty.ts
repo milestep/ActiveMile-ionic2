@@ -11,7 +11,7 @@ import { CounterpartyProvider } from '../../providers/counterparty/counterparty'
   templateUrl: 'counterparty.html',
 })
 export class CounterpartyPage {
-  public currentWorkspace:any;
+  public currentWorkspaceTitle:any;
   public foundCounterparties = [];
   public clientCounterparty = [];
   public vendorCounterparty = [];
@@ -23,7 +23,7 @@ export class CounterpartyPage {
     public navParams: NavParams,
     public counterparty: CounterpartyProvider) {
 
-    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
     this.foundCounterparties = navParams.get('foundCounterparties');
     this.filter()
   }

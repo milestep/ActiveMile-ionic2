@@ -12,7 +12,7 @@ import { ArticleProvider }  from '../../providers/article/article';
   templateUrl: 'article.html',
 })
 export class ArticlePage {
-  public currentWorkspace:any;
+  public currentWorkspaceTitle:any;
   public foundArticles = [];
   public costArticles = [];
   public revenueArticles = [];
@@ -23,7 +23,7 @@ export class ArticlePage {
     public navParams: NavParams,
     public article: ArticleProvider) {
 
-    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
     this.foundArticles = navParams.get('foundArticles');
     this.filter()
   }

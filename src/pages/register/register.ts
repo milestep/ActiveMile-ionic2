@@ -13,7 +13,7 @@ import { RegisterProvider } from '../../providers/register/register';
   templateUrl: 'register.html',
 })
 export class RegisterPage {
-  public currentWorkspace:any;
+  public currentWorkspaceTitle:any;
   public Register = {
     foundRegisters: [],
     filter_by_year: [],
@@ -34,7 +34,7 @@ export class RegisterPage {
     public counterparty: CounterpartyProvider,
     public register: RegisterProvider) {
 
-    this.currentWorkspace = navParams.get('currentWorkspace');
+    this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
     this.foundArticles = navParams.get('foundArticles');
     this.foundCounterparties = navParams.get('foundCounterparties');
     this.getRegisters()

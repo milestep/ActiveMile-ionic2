@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Platform, App } from 'ionic-angular';
+import { Platform, App, MenuController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { NetworkInfoProvider }  from '../providers/network-info/network-info';
 import { StorageProvider }    from '../providers/storage/storage';
+import { WorkspaceProvider }  from '../providers/workspace/workspace';
 import { ArticleProvider }  from '../providers/article/article';
 import { CounterpartyProvider } from '../providers/counterparty/counterparty';
 import { RegisterProvider } from '../providers/register/register';
@@ -24,7 +25,11 @@ import { RegisterPage } from '../pages/register/register';
 export class MyApp {
   rootPage:any;
   listMenu:any;
-  currentWorkspace:any;
+  workspaceData = {
+    currentWorkspace: false,
+    currentWorkspaceTitle: false,
+    foundWorkspaces: []
+  }
   foundArticles:any;
   foundCounterparties:any;
 
@@ -34,11 +39,13 @@ export class MyApp {
     statusBar: StatusBar,
     splashScreen: SplashScreen,
     public storage: StorageProvider,
+    public workspace: WorkspaceProvider,
     public article: ArticleProvider,
     public counterparty: CounterpartyProvider,
     public register: RegisterProvider,
     public network_info: NetworkInfoProvider,
     public loadingCtrl: LoadingCtrl,
+    public menuCtrl: MenuController,
     public alertCtrl: AlertCtrl) {
 
     if (window.location.origin != "http://localhost:8100") {
@@ -82,67 +89,108 @@ export class MyApp {
           this.app.getRootNav().setRoot(LoginPage);
         })
       } else {
-        let currentWorkspace = this.storage.getCurrentWorkspace()
+        this.workspace.getWorkspaces().subscribe(
+          res => {
+            this.workspaceData.foundWorkspaces = res;
 
-        if (currentWorkspace) {
-          if (this.currentWorkspace != currentWorkspace) {
-            this.currentWorkspace = currentWorkspace
-            this.article.setCurrentWorkspaceInProvider(this.currentWorkspace)
-            this.counterparty.setCurrentWorkspaceInProvider(this.currentWorkspace)
-            this.register.setCurrentWorkspaceInProvider(this.currentWorkspace)
+            this.checkCurrentWorkspaceExistenz().then((res) => {
+              if (res) {
+                this.goItemSelected(i)
+              } else {
+                this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
+                this.goItemSelected("Workspaces")
+              }
+            })
+          },
+          error => {
+            console.log("error", error)
           }
+        );
+      }
+    });
+  }
 
-          if (i === "Workspaces") {
-            this.app.getRootNav().setRoot(WorkspacePage);
-          } else if (i === "Articles") {
-            this.article.getArticles().subscribe(
-              res => {
-                this.app.getRootNav().setRoot(ArticlePage, {currentWorkspace: this.currentWorkspace, foundArticles: res});
-              },
-              error => {
-                console.log("error", error)
-              }
-            );
-          } else if (i === "Counterparties") {
+  checkCurrentWorkspaceExistenz() {
+    let currentWorkspace = this.storage.getCurrentWorkspace()
+
+    if (currentWorkspace) {
+      if (this.workspaceData.currentWorkspace != currentWorkspace) {
+        this.workspaceData.currentWorkspace = currentWorkspace
+        this.article.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
+        this.counterparty.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
+        this.register.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
+      }
+
+      // перевіряю на існування курент id
+      let bool = false
+      for (var i = this.workspaceData.foundWorkspaces.length - 1; i >= 0; i--) {
+        if (this.workspaceData.foundWorkspaces[i].id === this.workspaceData.currentWorkspace) {
+          this.workspaceData.currentWorkspaceTitle = this.workspaceData.foundWorkspaces[i].title
+          bool = true
+          break
+        }
+      }
+
+      if (!bool) {
+        this.workspaceData.currentWorkspaceTitle = false
+        this.workspaceData.currentWorkspace = false
+        this.storage.deleteCurrentWorkspace()
+        return Promise.resolve(false);
+      } else {
+        return Promise.resolve(true);
+      }
+    } else {
+      return Promise.resolve(false);
+    }
+  };
+
+  goItemSelected(i) {
+    if (i === "Workspaces") {
+      this.app.getRootNav().setRoot(WorkspacePage, {currentWorkspace: this.workspaceData.currentWorkspace, currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundWorkspaces: this.workspaceData.foundWorkspaces});
+    } else if (i === "Articles") {
+      this.article.getArticles().subscribe(
+        res => {
+          this.app.getRootNav().setRoot(ArticlePage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundArticles: res});
+        },
+        error => {
+          console.log("error", error)
+        }
+      );
+    } else if (i === "Counterparties") {
+      this.counterparty.getCounterparties().subscribe(
+        res => {
+          this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundCounterparties: res});
+        },
+        error => {
+          console.log("error", error)
+        }
+      );
+    } else if (i === "Registers") {
+      this.article.getArticles().subscribe(
+        resArticle => {
+          if (resArticle.length) {
             this.counterparty.getCounterparties().subscribe(
-              res => {
-                this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspace: this.currentWorkspace, foundCounterparties: res});
-              },
-              error => {
-                console.log("error", error)
-              }
-            );
-          } else if (i === "Registers") {
-            this.article.getArticles().subscribe(
-              resArticle => {
-                if (resArticle.length) {
-                  this.counterparty.getCounterparties().subscribe(
-                    resCounterparty => {
-                      if (resCounterparty.length) {
-                        this.app.getRootNav().setRoot(RegisterPage, {currentWorkspace: this.currentWorkspace, foundArticles: resArticle, foundCounterparties: resCounterparty});
-                      } else {
-                        this.alertCtrl.showAlert("Info", "Add counterparty", "OK")
-                        this.itemSelected("Counterparties")
-                      }
-                    },
-                    error => {
-                      console.log("error", error)
-                    }
-                  );
+              resCounterparty => {
+                if (resCounterparty.length) {
+                  this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundArticles: resArticle, foundCounterparties: resCounterparty});
                 } else {
-                  this.alertCtrl.showAlert("Info", "Add article", "OK")
-                  this.itemSelected("Articles")
+                  this.alertCtrl.showAlert("Info", "Add counterparty", "OK")
+                  this.itemSelected("Counterparties")
                 }
               },
               error => {
                 console.log("error", error)
               }
             );
+          } else {
+            this.alertCtrl.showAlert("Info", "Add article", "OK")
+            this.itemSelected("Articles")
           }
-        } else {
-          this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
+        },
+        error => {
+          console.log("error", error)
         }
-      }
-    });
+      );
+    }
   }
 }
