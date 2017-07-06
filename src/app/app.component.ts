@@ -18,6 +18,7 @@ import { WorkspacePage } from '../pages/workspace/workspace';
 import { ArticlePage } from '../pages/article/article';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
 import { RegisterPage } from '../pages/register/register';
+import { ReportPage } from '../pages/report/report';
 
 @Component({
   templateUrl: 'app.html'
@@ -67,7 +68,8 @@ export class MyApp {
     storage.init().then((value)=>{
       if (storage.getToken()) {
         this.rootPage = WorkspacePage
-        this.itemSelected('Registers')
+        this.itemSelected('Reports')
+        // this.itemSelected('Registers')
       } else {
         this.rootPage = LoginPage
       }
@@ -191,6 +193,12 @@ export class MyApp {
           console.log("error", error)
         }
       );
+    } else if (i === "Reports") {
+      this.DataForReportsPage()
     }
+  }
+
+  DataForReportsPage() {
+    this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle});
   }
 }
