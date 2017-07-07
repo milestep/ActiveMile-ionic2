@@ -34,59 +34,71 @@
   </ion-segment>
 
   <ion-item *ngIf="!foundCounterparties.length">
-      No counterparty
+    No counterparty
   </ion-item>
 
   <div [ngSwitch]="segment_now">
     <ion-list *ngSwitchCase="'Client'">
-      <ion-item *ngFor="let counterparty of clientCounterparty">
-        <div>
-          {{ counterparty.name }}
-        </div>
-        <div item-end>
-          {{ counterparty.date }}
-        </div>
+      <ion-item-sliding *ngFor="let counterparty of clientCounterparty">
+        <ion-item>
+          <div>
+            {{ counterparty.name }}
+          </div>
+          <div item-end>
+            {{ counterparty.date }}
+          </div>
+        </ion-item>
 
-        <ion-icon name="ios-create-outline" item-end (click)="editCounterparty(counterparty)"></ion-icon>
+        <ion-item-options side="left">
+          <button ion-button (click)="editCounterparty(counterparty)">Edit</button>
+        </ion-item-options>
 
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteCounterparty(counterparty.id)">
-        </ion-icon>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-list>
 
     <ion-list *ngSwitchCase="'Vendor'">
-      <ion-item *ngFor="let counterparty of vendorCounterparty">
-        <div>
-          {{ counterparty.name }}
-        </div>
-        <div item-end>
-          {{ counterparty.date }}
-        </div>
+      <ion-item-sliding *ngFor="let counterparty of vendorCounterparty">
+        <ion-item>
+          <div>
+            {{ counterparty.name }}
+          </div>
+          <div item-end>
+            {{ counterparty.date }}
+          </div>
+        </ion-item>
 
-        <ion-icon name="ios-create-outline" item-end (click)="editCounterparty(counterparty)"></ion-icon>
+        <ion-item-options side="left">
+          <button ion-button (click)="editCounterparty(counterparty)">Edit</button>
+        </ion-item-options>
 
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteCounterparty(counterparty.id)">
-        </ion-icon>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-list>
 
     <ion-list *ngSwitchCase="'Other'">
-      <ion-item *ngFor="let counterparty of otherCounterparty">
-        <div>
-          {{ counterparty.name }}
-        </div>
-        <div item-end>
-          {{ counterparty.date }}
-        </div>
+      <ion-item-sliding *ngFor="let counterparty of otherCounterparty">
+        <ion-item>
+          <div>
+            {{ counterparty.name }}
+          </div>
+          <div item-end>
+            {{ counterparty.date }}
+          </div>
+        </ion-item>
 
-        <ion-icon name="ios-create-outline" item-end (click)="editCounterparty(counterparty)"></ion-icon>
+        <ion-item-options side="left">
+          <button ion-button (click)="editCounterparty(counterparty)">Edit</button>
+        </ion-item-options>
 
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteCounterparty(counterparty.id)">
-        </ion-icon>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-list>
   </div>
 </ion-content>

@@ -36,31 +36,39 @@
 
   <div [ngSwitch]="segment_now">
     <ion-list *ngSwitchCase="'Cost'">
-      <ion-item *ngFor="let article of costArticles">
-        <div>
-          {{ article.title }}
-        </div>
+      <ion-item-sliding *ngFor="let article of costArticles">
+        <ion-item>
+          <div>
+            {{ article.title }}
+          </div>
+        </ion-item>
 
-        <ion-icon name="ios-create-outline" item-end (click)="editArticle(article)"></ion-icon>
+        <ion-item-options side="left">
+          <button ion-button (click)="editArticle(article)">Edit</button>
+        </ion-item-options>
 
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteArticle(article.id)">
-        </ion-icon>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteArticle(article.id)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-list>
 
     <ion-list *ngSwitchCase="'Revenue'">
-      <ion-item *ngFor="let article of revenueArticles">
-        <div>
-          {{ article.title }}
-        </div>
+      <ion-item-sliding *ngFor="let article of revenueArticles">
+        <ion-item>
+          <div>
+            {{ article.title }}
+          </div>
+        </ion-item>
 
-        <ion-icon name="ios-create-outline" item-end (click)="editArticle(article)"></ion-icon>
+        <ion-item-options side="left">
+          <button ion-button (click)="editArticle(article)">Edit</button>
+        </ion-item-options>
 
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteArticle(article.id)">
-        </ion-icon>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteArticle(article.id)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-list>
   </div>
 </ion-content>

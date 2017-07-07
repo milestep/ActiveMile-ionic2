@@ -68,8 +68,7 @@ export class MyApp {
     storage.init().then((value)=>{
       if (storage.getToken()) {
         this.rootPage = WorkspacePage
-        this.itemSelected('Reports')
-        // this.itemSelected('Registers')
+        this.itemSelected('Registers')
       } else {
         this.rootPage = LoginPage
       }
