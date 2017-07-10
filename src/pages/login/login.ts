@@ -7,6 +7,10 @@ import { NetworkInfoProvider }  from '../../providers/network-info/network-info'
 import { LoadingCtrl }          from '../../providers/loading/loading';
 import { AlertCtrl }            from '../../providers/alert/alert';
 
+import { ArticleProvider }      from '../../providers/article/article';
+import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
+import { RegisterProvider }     from '../../providers/register/register';
+
 import { WorkspacePage } from '../workspace/workspace';
 
 @IonicPage()
@@ -27,7 +31,10 @@ export class LoginPage {
     public alertCtrl: AlertCtrl,
     public navCtrl: NavController,
     public auth: AuthProvider,
-    public _form: FormBuilder) {
+    public _form: FormBuilder,
+    public article: ArticleProvider,
+    public counterparty: CounterpartyProvider,
+    public register: RegisterProvider) {
 
     this.loginForm = this._form.group({
       "email":["", Validators.required],
@@ -43,6 +50,10 @@ export class LoginPage {
 
     this.auth.login(data).subscribe(
       res => {
+        this.article.setTokenInProvider(res.access_token)
+        this.counterparty.setTokenInProvider(res.access_token)
+        this.register.setTokenInProvider(res.access_token)
+
         this.loadingCtrl.showLoader("Login...")
         this.navCtrl.setRoot(WorkspacePage);
       },

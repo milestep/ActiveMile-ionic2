@@ -64,6 +64,11 @@ export class RegisterProvider {
     }
   }
 
+  setTokenInProvider(token) {
+    this.TOKEN = token
+    this.OPTIONS.headers.set('Authorization', 'Bearer ' + this.TOKEN);
+  }
+
   private extractData(res: Response) {
     return res.json() || {};
   }

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavParams, ModalController, App } from 'ionic-angular';
 
-import { CounterpartyNewEditPage } from '../../pages/counterparty-new-edit/counterparty-new-edit';
+import { WorkspacePage } from '../workspace/workspace';
+import { CounterpartyNewEditPage } from '../counterparty-new-edit/counterparty-new-edit';
 
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
 
@@ -19,13 +20,14 @@ export class CounterpartyPage {
   public segment_now = 'Client';
 
   constructor(
+    protected app: App,
     public modalCtrl: ModalController,
     public navParams: NavParams,
     public counterparty: CounterpartyProvider) {
 
     this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
-    this.foundCounterparties = navParams.get('foundCounterparties');
-    this.filter()
+
+    this.getCounterparties()
   }
 
   getCounterparties() {
@@ -108,6 +110,10 @@ export class CounterpartyPage {
         this.otherCounterparty.unshift({id: item.id, name: item.name, type: item.type, date: item.date, created_at: item.created_at, updated_at: item.updated_at})
       }
     }
+  }
+
+  goWorkspacePage() {
+    this.app.getRootNav().setRoot(WorkspacePage);
   }
 
   doRefresh(refresher) {

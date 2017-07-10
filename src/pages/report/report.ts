@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavParams } from 'ionic-angular';
+import { IonicPage, NavParams, App } from 'ionic-angular';
 
-import { ArticleProvider }  from '../../providers/article/article';
+import { AlertCtrl }            from '../../providers/alert/alert';
+import { ArticleProvider }      from '../../providers/article/article';
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
-import { RegisterProvider } from '../../providers/register/register';
+import { RegisterProvider }     from '../../providers/register/register';
+
+import { WorkspacePage } from '../workspace/workspace';
+import { RegisterPage } from '../register/register';
 
 @IonicPage()
 @Component({
@@ -35,7 +39,9 @@ export class ReportPage {
   public foundCounterparties = [];
 
   constructor(
+    protected app: App,
     public navParams: NavParams,
+    public alertCtrl: AlertCtrl,
     public article: ArticleProvider,
     public counterparty: CounterpartyProvider,
     public register: RegisterProvider) {
@@ -66,6 +72,9 @@ export class ReportPage {
 
           this.initialization_filter_years()
           this.select_filter("year", this.calendarFilter.select_year)
+        } else {
+          this.alertCtrl.showAlert("Info", "Add register", "OK")
+          this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.currentWorkspaceTitle});
         }
       },
       error => {
@@ -363,6 +372,10 @@ export class ReportPage {
     }
 
     return false
+  }
+
+  goWorkspacePage() {
+    this.app.getRootNav().setRoot(WorkspacePage);
   }
 
   doRefresh(refresher) {

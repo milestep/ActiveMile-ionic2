@@ -11,7 +11,9 @@
     </ion-buttons>
 
     <ion-buttons end>
-      <ion-label>{{ currentWorkspaceTitle }}</ion-label>
+      <button ion-button (click)="goWorkspacePage()">
+        <ion-label>{{ currentWorkspaceTitle }}</ion-label>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -33,12 +35,12 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-item *ngIf="!foundCounterparties.length">
-    No counterparty
-  </ion-item>
-
   <div [ngSwitch]="segment_now">
     <ion-list *ngSwitchCase="'Client'">
+      <ion-item *ngIf="!clientCounterparty.length">
+        No counterparty Client
+      </ion-item>
+
       <ion-item-sliding *ngFor="let counterparty of clientCounterparty">
         <ion-item>
           <div>
@@ -60,6 +62,10 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'Vendor'">
+      <ion-item *ngIf="!vendorCounterparty.length">
+        No counterparty Vendor
+      </ion-item>
+
       <ion-item-sliding *ngFor="let counterparty of vendorCounterparty">
         <ion-item>
           <div>
@@ -81,6 +87,10 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'Other'">
+      <ion-item *ngIf="!otherCounterparty.length">
+        No counterparty Other
+      </ion-item>
+
       <ion-item-sliding *ngFor="let counterparty of otherCounterparty">
         <ion-item>
           <div>

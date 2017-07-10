@@ -11,7 +11,9 @@
     </ion-buttons>
 
     <ion-buttons end>
-      <ion-label>{{ currentWorkspaceTitle }}</ion-label>
+      <button ion-button (click)="goWorkspacePage()">
+        <ion-label>{{ workspaceData.currentTitle }}</ion-label>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
