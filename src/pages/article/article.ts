@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, NavParams } from 'ionic-angular';
+import { IonicPage, ModalController, NavParams, App } from 'ionic-angular';
 
+import { WorkspacePage } from '../workspace/workspace';
 import { ArticleAddPage } from '../article-add/article-add';
 import { ArticleEditPage } from '../article-edit/article-edit';
 
@@ -19,13 +20,13 @@ export class ArticlePage {
   public segment_now = 'Cost';
 
   constructor(
+    protected app: App,
     public modalCtrl: ModalController,
     public navParams: NavParams,
     public article: ArticleProvider) {
 
     this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
-    this.foundArticles = navParams.get('foundArticles');
-    this.filter()
+    this.getArticles()
   }
 
   getArticles() {
@@ -103,6 +104,10 @@ export class ArticlePage {
         this.revenueArticles.unshift({id: item.id, title: item.title, type: item.type, created_at: item.created_at, updated_at: item.updated_at})
       }
     }
+  }
+
+  goWorkspacePage() {
+    this.app.getRootNav().setRoot(WorkspacePage);
   }
 
   doRefresh(refresher) {

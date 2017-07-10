@@ -46,6 +46,7 @@ export class StorageProvider {
   }
 
   setCurrentWorkspace(id) {
+    this.workspace_id = id
     this.storage.set('workspace_id', id)
   }
 

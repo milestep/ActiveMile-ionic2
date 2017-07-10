@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavParams, ModalController, App } from 'ionic-angular';
 
-import { RegisterNewEditPage } from '../register-new-edit/register-new-edit';
+import { ArticlePage }          from '../article/article';
+import { CounterpartyPage }     from '../counterparty/counterparty';
+import { RegisterNewEditPage }  from '../register-new-edit/register-new-edit';
+import { WorkspacePage } from '../workspace/workspace';
 
-import { ArticleProvider }  from '../../providers/article/article';
+import { AlertCtrl }            from '../../providers/alert/alert';
+import { ArticleProvider }      from '../../providers/article/article';
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
-import { RegisterProvider } from '../../providers/register/register';
+import { RegisterProvider }     from '../../providers/register/register';
 
 @IonicPage()
 @Component({
@@ -13,7 +17,10 @@ import { RegisterProvider } from '../../providers/register/register';
   templateUrl: 'register.html',
 })
 export class RegisterPage {
-  public currentWorkspaceTitle:any;
+  workspaceData = {
+    currentTitle: false
+  };
+
   public Register = {
     foundRegisters: [],
     filter_by_year: [],
@@ -28,16 +35,17 @@ export class RegisterPage {
   public foundCounterparties = [];
 
   constructor(
+    protected app: App,
+    public alertCtrl: AlertCtrl,
     public navParams: NavParams,
     public modalCtrl: ModalController,
     public article: ArticleProvider,
     public counterparty: CounterpartyProvider,
     public register: RegisterProvider) {
 
-    this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
-    this.foundArticles = navParams.get('foundArticles');
-    this.foundCounterparties = navParams.get('foundCounterparties');
-    this.getRegisters()
+    this.workspaceData.currentTitle = navParams.get('currentWorkspaceTitle');
+
+    this.getArticlesAndCounterparties()
   }
 
   getRegisters() {
@@ -299,27 +307,37 @@ export class RegisterPage {
 
   getArticlesAndCounterparties() {
     this.article.getArticles().subscribe(
-      res => {
-        this.foundArticles = res
-      },
-      error => {
-        console.log("error", error)
-      }
-    );
+      resArticle => {
+        if (resArticle.length) {
+          this.counterparty.getCounterparties().subscribe(
+            resCounterparty => {
+              if (resCounterparty.length) {
+                this.foundArticles = resArticle
+                this.foundCounterparties = resCounterparty
 
-    this.counterparty.getCounterparties().subscribe(
-      res => {
-        this.foundCounterparties = res
+                this.getRegisters()
+              } else {
+                this.alertCtrl.showAlert("Info", "Add counterparty", "OK")
+                this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+              }
+            },
+            error => { console.log("error", error) }
+          );
+        } else {
+          this.alertCtrl.showAlert("Info", "Add article", "OK")
+          this.app.getRootNav().setRoot(ArticlePage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+        }
       },
-      error => {
-        console.log("error", error)
-      }
+      error => { console.log("error", error) }
     );
+  }
+
+  goWorkspacePage() {
+    this.app.getRootNav().setRoot(WorkspacePage);
   }
 
   doRefresh(refresher) {
     this.getArticlesAndCounterparties()
-    this.getRegisters()
 
     setTimeout(() => {
       refresher.complete();

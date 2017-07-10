@@ -25,14 +25,17 @@ import { ReportPage } from '../pages/report/report';
 })
 export class MyApp {
   rootPage:any;
-  listMenu:any;
+  listMenu = [
+    {icon: 'clipboard', name: 'Articles'},
+    {icon: 'contacts', name: 'Counterparties'},
+    {icon: 'md-paper', name: 'Registers'},
+    {icon: 'ios-pie-outline', name: 'Reports'}
+  ];
   workspaceData = {
-    currentWorkspace: false,
-    currentWorkspaceTitle: false,
+    currentId: false,
+    currentTitle: false,
     foundWorkspaces: []
-  }
-  foundArticles:any;
-  foundCounterparties:any;
+  };
 
   constructor(
     protected app: App,
@@ -56,14 +59,6 @@ export class MyApp {
         }
       });
     }
-
-    this.listMenu = [
-      {icon: 'home', name: 'Workspaces'},
-      {icon: 'clipboard', name: 'Articles'},
-      {icon: 'contacts', name: 'Counterparties'},
-      {icon: 'md-paper', name: 'Registers'},
-      {icon: 'ios-pie-outline', name: 'Reports'}
-    ];
 
     storage.init().then((value)=>{
       if (storage.getToken()) {
@@ -115,26 +110,26 @@ export class MyApp {
     let currentWorkspace = this.storage.getCurrentWorkspace()
 
     if (currentWorkspace) {
-      if (this.workspaceData.currentWorkspace != currentWorkspace) {
-        this.workspaceData.currentWorkspace = currentWorkspace
-        this.article.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
-        this.counterparty.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
-        this.register.setCurrentWorkspaceInProvider(this.workspaceData.currentWorkspace)
+      if (this.workspaceData.currentId != currentWorkspace) {
+        this.workspaceData.currentId = currentWorkspace
+        this.article.setCurrentWorkspaceInProvider(this.workspaceData.currentId)
+        this.counterparty.setCurrentWorkspaceInProvider(this.workspaceData.currentId)
+        this.register.setCurrentWorkspaceInProvider(this.workspaceData.currentId)
       }
 
       // перевіряю на існування курент id
       let bool = false
       for (var i = this.workspaceData.foundWorkspaces.length - 1; i >= 0; i--) {
-        if (this.workspaceData.foundWorkspaces[i].id === this.workspaceData.currentWorkspace) {
-          this.workspaceData.currentWorkspaceTitle = this.workspaceData.foundWorkspaces[i].title
+        if (this.workspaceData.foundWorkspaces[i].id === this.workspaceData.currentId) {
+          this.workspaceData.currentTitle = this.workspaceData.foundWorkspaces[i].title
           bool = true
           break
         }
       }
 
       if (!bool) {
-        this.workspaceData.currentWorkspaceTitle = false
-        this.workspaceData.currentWorkspace = false
+        this.workspaceData.currentTitle = false
+        this.workspaceData.currentId = false
         this.storage.deleteCurrentWorkspace()
         return Promise.resolve(false);
       } else {
@@ -146,58 +141,24 @@ export class MyApp {
   };
 
   goItemSelected(i) {
-    if (i === "Workspaces") {
-      this.app.getRootNav().setRoot(WorkspacePage, {currentWorkspace: this.workspaceData.currentWorkspace, currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundWorkspaces: this.workspaceData.foundWorkspaces});
-    } else if (i === "Articles") {
-      this.article.getArticles().subscribe(
+    if (i === "Articles")
+      this.app.getRootNav().setRoot(ArticlePage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+    else if (i === "Counterparties")
+      this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+    else if (i === "Registers") {
+      this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+    } else if (i === "Reports") {
+      this.register.getRegisters().subscribe(
         res => {
-          this.app.getRootNav().setRoot(ArticlePage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundArticles: res});
-        },
-        error => {
-          console.log("error", error)
-        }
-      );
-    } else if (i === "Counterparties") {
-      this.counterparty.getCounterparties().subscribe(
-        res => {
-          this.app.getRootNav().setRoot(CounterpartyPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundCounterparties: res});
-        },
-        error => {
-          console.log("error", error)
-        }
-      );
-    } else if (i === "Registers") {
-      this.article.getArticles().subscribe(
-        resArticle => {
-          if (resArticle.length) {
-            this.counterparty.getCounterparties().subscribe(
-              resCounterparty => {
-                if (resCounterparty.length) {
-                  this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle, foundArticles: resArticle, foundCounterparties: resCounterparty});
-                } else {
-                  this.alertCtrl.showAlert("Info", "Add counterparty", "OK")
-                  this.itemSelected("Counterparties")
-                }
-              },
-              error => {
-                console.log("error", error)
-              }
-            );
-          } else {
-            this.alertCtrl.showAlert("Info", "Add article", "OK")
-            this.itemSelected("Articles")
+          if (res.length)
+            this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+          else {
+            this.alertCtrl.showAlert("Info", "Add register", "OK")
+            this.goItemSelected("Registers")
           }
         },
-        error => {
-          console.log("error", error)
-        }
+        error => { console.log("error", error) }
       );
-    } else if (i === "Reports") {
-      this.DataForReportsPage()
     }
-  }
-
-  DataForReportsPage() {
-    this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentWorkspaceTitle});
   }
 }

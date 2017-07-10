@@ -11,7 +11,9 @@
     </ion-buttons>
 
     <ion-buttons end>
+      <button ion-button (click)="goWorkspacePage()">
         <ion-label>{{ currentWorkspaceTitle }}</ion-label>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -30,12 +32,12 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-item *ngIf="!foundArticles.length">
-      No articles
-  </ion-item>
-
   <div [ngSwitch]="segment_now">
     <ion-list *ngSwitchCase="'Cost'">
+      <ion-item *ngIf="!costArticles.length">
+        No articles Cost
+      </ion-item>
+
       <ion-item-sliding *ngFor="let article of costArticles">
         <ion-item>
           <div>
@@ -54,6 +56,10 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'Revenue'">
+      <ion-item *ngIf="!revenueArticles.length">
+        No articles Revenue
+      </ion-item>
+
       <ion-item-sliding *ngFor="let article of revenueArticles">
         <ion-item>
           <div>
