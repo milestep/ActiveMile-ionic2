@@ -51,6 +51,7 @@ export class StorageProvider {
   }
 
   deleteCurrentWorkspace() {
+    this.workspace_id = undefined
     return this.storage.remove("workspace_id")
   }
 }

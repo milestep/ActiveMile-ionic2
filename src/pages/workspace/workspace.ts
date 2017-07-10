@@ -2,10 +2,11 @@ import { Component }                  from '@angular/core';
 import { IonicPage, NavParams, App}   from 'ionic-angular';
 import { FormBuilder, Validators }    from '@angular/forms';
 
+import { AlertCtrl }            from '../../providers/alert/alert';
 import { StorageProvider }      from '../../providers/storage/storage';
 import { WorkspaceProvider }    from '../../providers/workspace/workspace';
 import { RegisterProvider }     from '../../providers/register/register';
-import { ArticleProvider }  from '../../providers/article/article';
+import { ArticleProvider }      from '../../providers/article/article';
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
 
 import { RegisterPage } from '../../pages/register/register';
@@ -33,6 +34,7 @@ export class WorkspacePage {
 
   constructor(
     protected app: App,
+    public alertCtrl: AlertCtrl,
     public workspace: WorkspaceProvider,
     public article: ArticleProvider,
     public counterparty: CounterpartyProvider,
@@ -55,8 +57,11 @@ export class WorkspacePage {
   getWorkspaces() {
     this.workspace.getWorkspaces().subscribe(
       res => {
-        this.workspaceData.foundWorkspaces = res;
-        this.checkCurrentWorkspaceExistenz()
+        if (res.length) {
+          this.workspaceData.foundWorkspaces = res;
+          this.checkCurrentWorkspaceExistenz()
+        } else
+          this.alertCtrl.showAlert("Info", "Add workspace", "OK")
       },
       error => {
         console.log("error", error)
@@ -183,6 +188,8 @@ export class WorkspacePage {
           this.storage.deleteCurrentWorkspace()
         }
       }
+    } else {
+      this.setCurrentWorkspace(this.workspaceData.foundWorkspaces[0].id, this.workspaceData.foundWorkspaces[0].title)
     }
   };
 

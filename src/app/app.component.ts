@@ -8,17 +8,17 @@ import { StorageProvider }    from '../providers/storage/storage';
 import { WorkspaceProvider }  from '../providers/workspace/workspace';
 import { ArticleProvider }  from '../providers/article/article';
 import { CounterpartyProvider } from '../providers/counterparty/counterparty';
-import { RegisterProvider } from '../providers/register/register';
+import { RegisterProvider }     from '../providers/register/register';
 
-import { AlertCtrl }            from '../providers/alert/alert';
-import { LoadingCtrl }        from '../providers/loading/loading';
+import { AlertCtrl }    from '../providers/alert/alert';
+import { LoadingCtrl }  from '../providers/loading/loading';
 
-import { LoginPage } from '../pages/login/login';
-import { WorkspacePage } from '../pages/workspace/workspace';
-import { ArticlePage } from '../pages/article/article';
+import { LoginPage }        from '../pages/login/login';
+import { WorkspacePage }    from '../pages/workspace/workspace';
+import { ArticlePage }      from '../pages/article/article';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
-import { RegisterPage } from '../pages/register/register';
-import { ReportPage } from '../pages/report/report';
+import { RegisterPage }     from '../pages/register/register';
+import { ReportPage }       from '../pages/report/report';
 
 @Component({
   templateUrl: 'app.html'
@@ -82,21 +82,23 @@ export class MyApp {
       if(i === "Logout"){
         this.storage.removeToken().then((result) => {
           this.loadingCtrl.showLoader("Exit...");
+          this.storage.deleteCurrentWorkspace()
           this.app.getRootNav().setRoot(LoginPage);
         })
       } else {
         this.workspace.getWorkspaces().subscribe(
-          res => {
-            this.workspaceData.foundWorkspaces = res;
+          resfoundWorkspaces => {
+            this.workspaceData.foundWorkspaces = resfoundWorkspaces;
 
-            this.checkCurrentWorkspaceExistenz().then((res) => {
-              if (res) {
-                this.goItemSelected(i)
-              } else {
-                this.alertCtrl.showAlert("Info", "Choose workspace", "OK")
-                this.goItemSelected("Workspaces")
-              }
-            })
+            if (resfoundWorkspaces.length) {
+              this.checkCurrentWorkspaceExistenz().then((res) => {
+                if (res)
+                  this.goItemSelected(i)
+                else
+                  this.goItemSelected("Workspaces")
+              })
+            } else
+              this.goItemSelected("Workspaces")
           },
           error => {
             console.log("error", error)
@@ -128,8 +130,8 @@ export class MyApp {
       }
 
       if (!bool) {
-        this.workspaceData.currentTitle = false
         this.workspaceData.currentId = false
+        this.workspaceData.currentTitle = false
         this.storage.deleteCurrentWorkspace()
         return Promise.resolve(false);
       } else {
@@ -148,17 +150,7 @@ export class MyApp {
     else if (i === "Registers") {
       this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
     } else if (i === "Reports") {
-      this.register.getRegisters().subscribe(
-        res => {
-          if (res.length)
-            this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
-          else {
-            this.alertCtrl.showAlert("Info", "Add register", "OK")
-            this.goItemSelected("Registers")
-          }
-        },
-        error => { console.log("error", error) }
-      );
+      this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
     }
   }
 }

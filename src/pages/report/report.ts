@@ -6,8 +6,8 @@ import { ArticleProvider }      from '../../providers/article/article';
 import { CounterpartyProvider } from '../../providers/counterparty/counterparty';
 import { RegisterProvider }     from '../../providers/register/register';
 
-import { WorkspacePage } from '../workspace/workspace';
-import { RegisterPage } from '../register/register';
+import { WorkspacePage }  from '../workspace/workspace';
+import { RegisterPage }   from '../register/register';
 
 @IonicPage()
 @Component({
