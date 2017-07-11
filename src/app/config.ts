@@ -9,6 +9,8 @@ if (window.location.origin === "http://localhost:8100") {
 } else {
   BASE_URL = "http://activemile.milestep.io:3000/api"
   STRINGIFIED_PARAMS = "client_id=9d8441b6a13ac46f6f72f769c5c40b3cf0aa2af5baf2e5771af60c6370b946cb&grant_type=password"
+  // for me api
+  // BASE_URL = "http://activemile.milestep.io:3040/api"
   // STRINGIFIED_PARAMS = "client_id=a85f7339674369dd0aa5841779e1d81b39e4633a95058f56d687cd8be7bcc36f&grant_type=password"
 }
 
