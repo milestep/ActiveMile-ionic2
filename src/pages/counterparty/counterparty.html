@@ -7,10 +7,6 @@
     <ion-title>Counterparty</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="newCounterparty()"><ion-icon name="add-circle"></ion-icon></button>
-    </ion-buttons>
-
-    <ion-buttons end>
       <button ion-button (click)="goWorkspacePage()">
         <ion-label>{{ currentWorkspaceTitle }}</ion-label>
       </button>
@@ -111,4 +107,6 @@
       </ion-item-sliding>
     </ion-list>
   </div>
+
+  <ion-icon class="new-model" color="primary"  (click)="newCounterparty()" name="ios-add-circle"></ion-icon>
 </ion-content>

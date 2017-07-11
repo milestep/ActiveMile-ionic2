@@ -7,10 +7,6 @@
     <ion-title>Register</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="newRegister()"><ion-icon name="add-circle"></ion-icon></button>
-    </ion-buttons>
-
-    <ion-buttons end>
       <button ion-button (click)="goWorkspacePage()">
         <ion-label>{{ workspaceData.currentTitle }}</ion-label>
       </button>
@@ -89,4 +85,6 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-icon class="new-model" color="primary"  (click)="newRegister()" name="ios-add-circle"></ion-icon>
 </ion-content>

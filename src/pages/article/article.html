@@ -7,10 +7,6 @@
     <ion-title>Article</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="newArticle()"><ion-icon name="add-circle"></ion-icon></button>
-    </ion-buttons>
-
-    <ion-buttons end>
       <button ion-button (click)="goWorkspacePage()">
         <ion-label>{{ currentWorkspaceTitle }}</ion-label>
       </button>
@@ -77,4 +73,6 @@
       </ion-item-sliding>
     </ion-list>
   </div>
+
+  <ion-icon class="new-model" color="primary"  (click)="newArticle()" name="ios-add-circle"></ion-icon>
 </ion-content>
