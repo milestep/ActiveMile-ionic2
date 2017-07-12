@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavParams, ModalController, App } from 'ionic-angular';
 
+import { WorkspacePage }        from '../workspace/workspace';
 import { ArticlePage }          from '../article/article';
 import { CounterpartyPage }     from '../counterparty/counterparty';
+import { RegisterShowPage }     from '../register-show/register-show';
 import { RegisterNewEditPage }  from '../register-new-edit/register-new-edit';
-import { WorkspacePage } from '../workspace/workspace';
 
 import { AlertCtrl }            from '../../providers/alert/alert';
 import { ArticleProvider }      from '../../providers/article/article';
@@ -75,6 +76,21 @@ export class RegisterPage {
         console.log("error", error)
       }
     );
+  }
+
+  showRegister(register){
+    let addModal = this.modalCtrl.create(RegisterShowPage, {register: register});
+
+    addModal.onDidDismiss((action, id_or_register) => {
+      if (action && id_or_register) {
+        if (action === "delete")
+          this.deleteRegister(id_or_register)
+        else if (action === "edit")
+          this.editRegister(id_or_register)
+      }
+    });
+
+    addModal.present();
   }
 
   newRegister(){
@@ -301,10 +317,6 @@ export class RegisterPage {
     return false
   }
 
-  getDay(date) {
-   return new Date(date).getDay();
-  }
-
   getArticlesAndCounterparties() {
     this.article.getArticles().subscribe(
       resArticle => {
@@ -330,6 +342,11 @@ export class RegisterPage {
       },
       error => { console.log("error", error) }
     );
+  }
+
+  getDate(date) {
+    let new_date = `${new Date(date).getDate()}/${new Date(date).getMonth() + 1}`
+    return new_date;
   }
 
   goWorkspacePage() {

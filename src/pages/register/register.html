@@ -44,47 +44,17 @@
     </ion-item>
   </ion-list>
 
-  <ion-grid *ngIf="Register.foundRegisters.length">
-    <ion-row>
-      <ion-col col-1>Day</ion-col>
-      <ion-col col-2>Article</ion-col>
-      <ion-col col-3>Counterparty</ion-col>
-      <ion-col col-2>Value</ion-col>
-      <ion-col col-2>Notes</ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid *ngFor="let register of Register.filter_by_year_and_month">
-    <ion-row>
-      <ion-col col-1>
-        {{ getDay(register.date) }}
-      </ion-col>
-
-      <ion-col col-2 [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
-        {{ register.article_title }}
-      </ion-col>
-
-      <ion-col col-3 [style.color]="register.counterparty_type === 'Client' ? 'green' : 'blue'">
-        {{ register.counterparty_name }}
-      </ion-col>
-
-      <ion-col col-2>
-        {{ register.value }}
-      </ion-col>
-
-      <ion-col col-2>
-        {{ register.note }}
-      </ion-col>
-
-      <ion-col col-2>
-        <ion-icon name="ios-create-outline" item-end (click)="editRegister(register)"></ion-icon>
-
-        <ion-icon name="ios-close-circle-outline" item-end
-          (click)="deleteRegister(register.id)">
-        </ion-icon>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list>
+    <button ion-item
+      *ngFor="let register of Register.filter_by_year_and_month"
+      (click)="showRegister(register)"
+    >
+      <button ion-button clear item-start>{{ getDate(register.date) }}</button>
+      <h2>{{ register.article_title }}</h2>
+      <p>{{ register.counterparty_name }}</p>
+      <h2 item-end>{{ register.value }}</h2>
+    </button>
+  </ion-list>
 
   <ion-icon class="new-model" color="primary"  (click)="newRegister()" name="ios-add-circle"></ion-icon>
 </ion-content>
