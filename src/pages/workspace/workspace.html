@@ -8,7 +8,6 @@
 
     <ion-buttons end>
       <ion-label *ngIf='workspaceData.currentTitle'>{{ workspaceData.currentTitle }}</ion-label>
-      <ion-label *ngIf='!workspaceData.currentTitle'>Виберіть Workspace</ion-label>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -17,21 +16,6 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
-  <ion-grid>
-    <form [formGroup]="formWorkspace">
-      <ion-row>
-        <ion-col col-10>
-          <ion-item>
-            <ion-input type="text" autofocus formControlName="title" [(ngModel)]="titleField" placeholder="Title"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col col-2>
-          <button (click)="createWorkspace()" [disabled]="formWorkspace.invalid" ion-button><ion-icon name="add"></ion-icon></button>
-        </ion-col>
-      </ion-row>
-    </form>
-  </ion-grid>
 
   <ion-list>
     <ion-item *ngIf="!workspaceData.foundWorkspaces">
