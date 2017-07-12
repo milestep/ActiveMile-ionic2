@@ -47,7 +47,7 @@
 
     <hr>
 
-    <ion-row>
+    <ion-row *ngIf="show_register.note">
       <ion-col col-12>Note</ion-col>
       <ion-col col-12>{{ show_register.note }}</ion-col>
     </ion-row>

@@ -33,27 +33,6 @@ export class WorkspaceProvider {
     .catch(this.catchError);
   }
 
-  createWorkspace(body) {
-    return this.http.post(this.URL, body, this.OPTIONS)
-    .do((res: Response) => {})
-    .map(this.extractData)
-    .catch(this.catchError);
-  }
-
-  updateWorkspace(id, body) {
-    return this.http.put(`${this.URL}/${id}`, body, this.OPTIONS)
-    .do((res: Response) => {})
-    .map(this.extractData)
-    .catch(this.catchError);
-  }
-
-  deleteWorkspace(id) {
-    return this.http.delete(`${this.URL}/${id}`, this.OPTIONS)
-    .do((res: Response) => {})
-    .map(this.extractData)
-    .catch(this.catchError);
-  }
-
   setCurrentWorkspace(id) {
     this.storage.setCurrentWorkspace(id)
   }
