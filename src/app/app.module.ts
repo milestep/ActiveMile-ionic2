@@ -17,6 +17,7 @@ import { CounterpartyPage } from '../pages/counterparty/counterparty';
 import { CounterpartyNewEditPage } from '../pages/counterparty-new-edit/counterparty-new-edit';
 import { RegisterPage } from '../pages/register/register';
 import { RegisterNewEditPage } from '../pages/register-new-edit/register-new-edit';
+import { RegisterShowPage } from '../pages/register-show/register-show';
 import { ReportPage } from '../pages/report/report';
 
 import { AuthProvider } from '../providers/auth/auth';
@@ -42,6 +43,7 @@ import { AlertCtrl } from '../providers/alert/alert';
     CounterpartyNewEditPage,
     RegisterPage,
     RegisterNewEditPage,
+    RegisterShowPage,
     ReportPage
   ],
   imports: [
@@ -62,6 +64,7 @@ import { AlertCtrl } from '../providers/alert/alert';
     CounterpartyNewEditPage,
     RegisterPage,
     RegisterNewEditPage,
+    RegisterShowPage,
     ReportPage
   ],
   providers: [

@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Register-show
+    </ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>{{ show_register.date }}</ion-col>
+    </ion-row>
+
+    <hr>
+
+    <ion-row>
+      <ion-col col-12>Article
+        <div [style.color]="show_register.article_type === 'Cost' ? 'red' : 'green'">
+          {{ show_register.article_title }}
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <hr>
+
+    <ion-row>
+      <ion-col col-12>Counterparty
+        <div [style.color]="show_register.counterparty_type === 'Client' ? 'green' : 'blue'">
+          {{ show_register.counterparty_name }}
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <hr>
+
+    <ion-row>
+      <ion-col col-12>Value
+        <div [style.color]="show_register.article_type === 'Cost' ? 'red' : 'green'">
+          {{ show_register.value }}
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <hr>
+
+    <ion-row>
+      <ion-col col-12>Note</ion-col>
+      <ion-col col-12>{{ show_register.note }}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <button full ion-button (click)="editRegister(show_register)">Edit</button>
+      </ion-col>
+
+      <ion-col col-6>
+        <button full ion-button color="danger" (click)="deleteRegister(show_register.id)">Delete</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
