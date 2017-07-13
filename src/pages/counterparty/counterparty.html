@@ -19,6 +19,10 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div text-center>
+    <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
+  </div>
+
   <ion-segment [(ngModel)]="segment_now" color="primary">
     <ion-segment-button value="Client">
       Client

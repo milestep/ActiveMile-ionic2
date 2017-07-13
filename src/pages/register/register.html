@@ -19,6 +19,10 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div text-center>
+    <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
+  </div>
+
   <ion-item *ngIf="!Register.foundRegisters.length">
     No Registers
   </ion-item>

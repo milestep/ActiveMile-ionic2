@@ -17,6 +17,10 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div text-center>
+    <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
+  </div>
+
   <ion-list>
     <ion-item *ngIf="!workspaceData.foundWorkspaces">
       No workspaces
