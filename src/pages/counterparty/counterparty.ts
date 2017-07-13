@@ -18,6 +18,7 @@ export class CounterpartyPage {
   public vendorCounterparty = [];
   public otherCounterparty = [];
   public segment_now = 'Client';
+  public loader = false;
 
   constructor(
     protected app: App,
@@ -35,8 +36,10 @@ export class CounterpartyPage {
       res => {
         this.foundCounterparties = res;
         this.filter()
+        this.loader = true
       },
       error => {
+        this.loader = true
         console.log("error", error)
       }
     );

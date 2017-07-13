@@ -21,6 +21,7 @@ export class WorkspacePage {
     currentTitle: false,
     foundWorkspaces: []
   };
+  public loader = false;
 
   constructor(
     protected app: App,
@@ -42,8 +43,13 @@ export class WorkspacePage {
           this.checkCurrentWorkspaceExistenz()
         } else
           this.alertCtrl.showAlert("Info", "Add workspace", "OK")
+
+        this.loader = true
       },
-      error => { console.log("error", error) }
+      error => {
+        this.loader = true;
+        console.log("error", error)
+      }
     );
   }
 

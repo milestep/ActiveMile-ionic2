@@ -34,6 +34,7 @@ export class RegisterPage {
   public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
   public foundArticles = [];
   public foundCounterparties = [];
+  public loader = false;
 
   constructor(
     protected app: App,
@@ -71,8 +72,11 @@ export class RegisterPage {
           this.initialization_filter_years()
           this.select_filter("year", this.Register.select_year)
         }
+
+        this.loader = true
       },
       error => {
+        this.loader = true
         console.log("error", error)
       }
     );
@@ -354,6 +358,7 @@ export class RegisterPage {
   }
 
   doRefresh(refresher) {
+    console.log(refresher)
     this.getArticlesAndCounterparties()
 
     setTimeout(() => {

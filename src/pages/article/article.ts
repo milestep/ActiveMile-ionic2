@@ -18,6 +18,7 @@ export class ArticlePage {
   public costArticles = [];
   public revenueArticles = [];
   public segment_now = 'Cost';
+  public loader = false;
 
   constructor(
     protected app: App,
@@ -34,8 +35,10 @@ export class ArticlePage {
       res => {
         this.foundArticles = res;
         this.filter()
+        this.loader = true;
       },
       error => {
+        this.loader = true;
         console.log("error", error)
       }
     );
