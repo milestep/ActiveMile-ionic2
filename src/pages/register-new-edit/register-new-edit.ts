@@ -57,7 +57,7 @@ export class RegisterNewEditPage {
       this.new_edit_register.counterparty_name = get_register.counterparty_name
       this.new_edit_register.counterparty_type = get_register.counterparty_type
     } else {
-      this.new_edit_register.date = this.formatDate(new Date())
+      this.new_edit_register.date = this.formatDate()
       this.new_edit_register.article_id = this.foundArticles[0].id
       this.new_edit_register.article_title = this.foundArticles[0].title
       this.new_edit_register.article_type = this.foundArticles[0].type
@@ -105,8 +105,8 @@ export class RegisterNewEditPage {
     }
   }
 
-  formatDate(date) {
-    var d = new Date(date),
+  formatDate() {
+    var d = new Date(),
       month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
       year = d.getFullYear();

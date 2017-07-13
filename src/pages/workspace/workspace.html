@@ -26,16 +26,21 @@
       No workspaces
     </ion-item>
 
-    <button ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'"
-      *ngFor="let workspace of workspaceData.foundWorkspaces; let i = index" [attr.data-index]="i"
-      (click)="setCurrentWorkspace(workspace.id, workspace.title)"
-    >
-      <ion-icon
-        [color]="currentWorkspace_orNot(workspace.id) ? 'primary' : 'light'"
-        [name]="currentWorkspace_orNot(workspace.id) ? 'star' : 'checkmark'">
-      </ion-icon>
-
-      {{ workspace.title }}
-    </button>
+    <ion-grid>
+      <button ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'"
+        *ngFor="let workspace of workspaceData.foundWorkspaces; let i = index" [attr.data-index]="i"
+        (click)="setCurrentWorkspace(workspace.id, workspace.title)"
+      >
+        <ion-row>
+          <ion-col col-1>
+            <ion-icon color="primary" name="star"
+              *ngIf="currentWorkspace_orNot(workspace.id)"
+            >
+            </ion-icon>
+          </ion-col>
+          <ion-col col-11>{{ workspace.title }}</ion-col>
+        </ion-row>
+      </button>
+    </ion-grid>
   </ion-list>
 </ion-content>
