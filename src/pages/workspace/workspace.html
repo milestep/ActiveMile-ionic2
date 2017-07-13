@@ -22,8 +22,8 @@
       No workspaces
     </ion-item>
 
-    <button ion-item
-      *ngFor="let workspace of workspaceData.foundWorkspaces"
+    <button ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'"
+      *ngFor="let workspace of workspaceData.foundWorkspaces; let i = index" [attr.data-index]="i"
       (click)="setCurrentWorkspace(workspace.id, workspace.title)"
     >
       <ion-icon

@@ -34,8 +34,8 @@
         No articles Cost
       </ion-item>
 
-      <ion-item-sliding *ngFor="let article of costArticles">
-        <ion-item>
+      <ion-item-sliding *ngFor="let article of costArticles; let i = index" [attr.data-index]="i">
+        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ article.title }}
           </div>
@@ -56,8 +56,8 @@
         No articles Revenue
       </ion-item>
 
-      <ion-item-sliding *ngFor="let article of revenueArticles">
-        <ion-item>
+      <ion-item-sliding *ngFor="let article of revenueArticles; let i = index" [attr.data-index]="i">
+        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ article.title }}
           </div>

@@ -37,8 +37,8 @@
         No counterparty Client
       </ion-item>
 
-      <ion-item-sliding *ngFor="let counterparty of clientCounterparty">
-        <ion-item>
+      <ion-item-sliding *ngFor="let counterparty of clientCounterparty; let i = index" [attr.data-index]="i">
+        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
           </div>
@@ -62,8 +62,8 @@
         No counterparty Vendor
       </ion-item>
 
-      <ion-item-sliding *ngFor="let counterparty of vendorCounterparty">
-        <ion-item>
+      <ion-item-sliding *ngFor="let counterparty of vendorCounterparty; let i = index" [attr.data-index]="i">
+        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
           </div>
@@ -87,8 +87,8 @@
         No counterparty Other
       </ion-item>
 
-      <ion-item-sliding *ngFor="let counterparty of otherCounterparty">
-        <ion-item>
+      <ion-item-sliding *ngFor="let counterparty of otherCounterparty; let i = index" [attr.data-index]="i">
+        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
           </div>

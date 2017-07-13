@@ -45,14 +45,21 @@
   </ion-list>
 
   <ion-list>
-    <button ion-item
-      *ngFor="let register of Register.filter_by_year_and_month"
+    <button ion-item no-lines
+      *ngFor="let register of Register.filter_by_year_and_month; let i = index" [attr.data-index]="i"
       (click)="showRegister(register)"
+      [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'"
     >
       <button ion-button clear item-start>{{ getDate(register.date) }}</button>
-      <h2>{{ register.article_title }}</h2>
-      <p>{{ register.counterparty_name }}</p>
-      <h2 item-end>{{ register.value }}</h2>
+      <h2 [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
+        {{ register.article_title }}
+      </h2>
+      <h2>
+        {{ register.counterparty_name }}
+      </h2>
+      <h2 item-end>
+        {{ register.value }}
+      </h2>
     </button>
   </ion-list>
 
