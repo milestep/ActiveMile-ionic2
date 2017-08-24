@@ -13,12 +13,25 @@ import { CounterpartyProvider } from '../../providers/counterparty/counterparty'
 })
 export class CounterpartyPage {
   public currentWorkspaceTitle:any;
-  public foundCounterparties = [];
-  public clientCounterparty = [];
-  public vendorCounterparty = [];
-  public otherCounterparty = [];
-  public segment_now = 'Client';
+  public counterparties = {
+    Client: {
+      active: [],
+      not_active: []
+    },
+    Vendor: {
+      active: [],
+      not_active: []
+    },
+    Other: {
+      active: [],
+      not_active: []
+    }
+  };
   public loader = false;
+  public segment = {
+    current: 'Client',
+    options: ['Client', 'Vendor', 'Other']
+  };
 
   constructor(
     protected app: App,
@@ -34,8 +47,7 @@ export class CounterpartyPage {
   getCounterparties() {
     this.counterparty.getCounterparties().subscribe(
       res => {
-        this.foundCounterparties = res;
-        this.filter()
+        this.createDataCounterparties(res)
         this.loader = true
       },
       error => {
@@ -62,8 +74,8 @@ export class CounterpartyPage {
 
     addModal.onDidDismiss((res) => {
       if(res){
-        this.foundCounterparties.unshift({id: res.id, name: res.name, type: res.type, date: res.date, created_at: res.created_at, updated_at: res.updated_at})
-        this.filter()
+        let status = res.active ? 'active' : 'not_active'
+        this.counterparties[res.type][status].unshift(res)
       }
     });
 
@@ -75,31 +87,33 @@ export class CounterpartyPage {
 
     addModal.onDidDismiss((res) => {
       if(res){
-        for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-          if (this.foundCounterparties[i].id === counterparty.id) {
-            this.foundCounterparties[i].name = res.name
-            this.foundCounterparties[i].type = res.type
-            this.foundCounterparties[i].date = res.date
+        delete res.workspace
+        let status = counterparty.active ? 'active' : 'not_active'
+        let newStatus = res.active ? 'active' : 'not_active'
+
+        for (var i = this.counterparties[counterparty.type][status].length - 1; i >= 0; i--) {
+          if (this.counterparties[counterparty.type][status][i].id === counterparty.id) {
+            this.counterparties[counterparty.type][status].splice(i, 1)
+            this.counterparties[res.type][newStatus].unshift(res)
             break
           }
         }
-        this.filter()
       }
     });
 
     addModal.present();
   }
 
-  deleteCounterparty(id) {
+  deleteCounterparty(id, type, active) {
     this.counterparty.deleteCounterparty(id).subscribe(
       res => {
-        for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-          if (this.foundCounterparties[i].id === id) {
-            this.foundCounterparties.splice(i, 1)
+        let status = active ? 'active' : 'not_active'
+        for (var i = this.counterparties[type][status].length - 1; i >= 0; i--) {
+          if (this.counterparties[type][status][i].id === id) {
+            this.counterparties[type][status].splice(i, 1)
             break
           }
         }
-        this.filter()
       },
       error => {
         console.log("error", error)
@@ -107,24 +121,30 @@ export class CounterpartyPage {
     );
   }
 
-  filter() {
-    this.clientCounterparty = []
-    this.vendorCounterparty = []
-    this.otherCounterparty = []
-
-    let item
-
-    for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-      item = this.foundCounterparties[i]
-
-      if (item.type === 'Client') {
-        this.clientCounterparty.unshift({id: item.id, name: item.name, type: item.type, date: item.date, created_at: item.created_at, updated_at: item.updated_at})
-      } else if (item.type === 'Vendor') {
-        this.vendorCounterparty.unshift({id: item.id, name: item.name, type: item.type, date: item.date, created_at: item.created_at, updated_at: item.updated_at})
-      } else {
-        this.otherCounterparty.unshift({id: item.id, name: item.name, type: item.type, date: item.date, created_at: item.created_at, updated_at: item.updated_at})
+  createDataCounterparties(foundCounterparties) {
+    let fakeCounterparties = {
+      Client: {
+        active: [],
+        not_active: []
+      },
+      Vendor: {
+        active: [],
+        not_active: []
+      },
+      Other: {
+        active: [],
+        not_active: []
       }
     }
+
+    for (var i = foundCounterparties.length - 1; i >= 0; i--) {
+      let item = foundCounterparties[i]
+      let status = item.active ? 'active' : 'not_active'
+
+      fakeCounterparties[item.type][status].push(item)
+    }
+
+    this.counterparties = fakeCounterparties
   }
 
   goWorkspacePage() {

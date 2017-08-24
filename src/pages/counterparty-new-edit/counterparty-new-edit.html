@@ -37,5 +37,10 @@
     </ion-item>
   </ion-list>
 
+  <ion-item *ngIf="new_edit_counterparty.status === 'edit'">
+    <ion-label>Active</ion-label>
+    <ion-checkbox [(ngModel)]="new_edit_counterparty.active"></ion-checkbox>
+  </ion-item>
+
   <button full ion-button [disabled]="formCounterparty.invalid" (click)="createUpdateCounterparty()">Save</button>
 </ion-content>
