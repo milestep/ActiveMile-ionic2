@@ -17,6 +17,7 @@ export class CounterpartyNewEditPage {
     id: '',
     name: '',
     type: 'Client',
+    active: undefined,
     date: undefined
   };
 
@@ -34,6 +35,7 @@ export class CounterpartyNewEditPage {
       this.new_edit_counterparty.name = get_counterparty.name
       this.new_edit_counterparty.type = get_counterparty.type
       this.new_edit_counterparty.status = 'edit'
+      this.new_edit_counterparty.active = get_counterparty.active
       this.new_edit_counterparty.date = get_counterparty.date
     } else {
       this.new_edit_counterparty.date = this.formatDate()

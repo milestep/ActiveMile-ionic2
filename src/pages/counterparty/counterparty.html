@@ -23,25 +23,19 @@
     <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
   </div>
 
-  <ion-segment [(ngModel)]="segment_now" color="primary">
-    <ion-segment-button value="Client">
-      Client
-    </ion-segment-button>
-    <ion-segment-button value="Vendor">
-      Vendor
-    </ion-segment-button>
-    <ion-segment-button value="Other">
-      Other
+  <ion-segment [(ngModel)]="segment.current" color="primary">
+    <ion-segment-button *ngFor="let segment of segment.options" value={{segment}}>
+      {{ segment }}
     </ion-segment-button>
   </ion-segment>
 
-  <div [ngSwitch]="segment_now">
-    <ion-list *ngSwitchCase="'Client'">
-      <ion-item *ngIf="!clientCounterparty.length">
-        No counterparty Client
+  <div [ngSwitch]="segment.current">
+    <ion-list *ngSwitchCase=segment.current>
+      <ion-item no-lines *ngIf="!counterparties[segment.current]['active'].length">
+        Not have actice counterparty {{segment.current}}
       </ion-item>
 
-      <ion-item-sliding *ngFor="let counterparty of clientCounterparty; let i = index" [attr.data-index]="i">
+      <ion-item-sliding *ngFor="let counterparty of counterparties[segment.current]['active']; let i = index" [attr.data-index]="i">
         <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
@@ -56,18 +50,16 @@
         </ion-item-options>
 
         <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id, counterparty.type, counterparty.active)">Delete</button>
         </ion-item-options>
       </ion-item-sliding>
-    </ion-list>
 
-    <ion-list *ngSwitchCase="'Vendor'">
-      <ion-item *ngIf="!vendorCounterparty.length">
-        No counterparty Vendor
-      </ion-item>
+      <hr>
 
-      <ion-item-sliding *ngFor="let counterparty of vendorCounterparty; let i = index" [attr.data-index]="i">
-        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
+      <ion-item no-lines *ngIf="counterparties[segment.current]['not_active'].length">Not active</ion-item>
+
+      <ion-item-sliding  *ngFor="let counterparty of counterparties[segment.current]['not_active']; let i = index" [attr.data-index]="i">
+        <ion-item ngClass="not-active" no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
           </div>
@@ -81,32 +73,7 @@
         </ion-item-options>
 
         <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <ion-list *ngSwitchCase="'Other'">
-      <ion-item *ngIf="!otherCounterparty.length">
-        No counterparty Other
-      </ion-item>
-
-      <ion-item-sliding *ngFor="let counterparty of otherCounterparty; let i = index" [attr.data-index]="i">
-        <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
-          <div>
-            {{ counterparty.name }}
-          </div>
-          <div item-end>
-            {{ formatDate(counterparty.date) }}
-          </div>
-        </ion-item>
-
-        <ion-item-options side="left">
-          <button ion-button (click)="editCounterparty(counterparty)">Edit</button>
-        </ion-item-options>
-
-        <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id)">Delete</button>
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id, counterparty.type, counterparty.active)">Delete</button>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>

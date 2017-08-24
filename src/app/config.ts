@@ -5,7 +5,7 @@ let BASE_URL, STRINGIFIED_PARAMS
 
 if (window.location.origin === "http://localhost:8100") {
   BASE_URL = "http://localhost:3000/api"
-  STRINGIFIED_PARAMS = "client_id=68aa5feb9038b13bb89e2623b47ec108cfb96742cf1db2e047694d5770ca16f7&grant_type=password"
+  STRINGIFIED_PARAMS = "client_id=6587092e46c54141ba3046f3e9c44e9a0cc79fdeb6db27fb42f78959f203ef16&grant_type=password"
 } else {
   BASE_URL = "http://activemile.milestep.io:3000/api"
   STRINGIFIED_PARAMS = "client_id=9d8441b6a13ac46f6f72f769c5c40b3cf0aa2af5baf2e5771af60c6370b946cb&grant_type=password"
