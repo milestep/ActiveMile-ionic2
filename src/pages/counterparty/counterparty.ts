@@ -14,18 +14,9 @@ import { CounterpartyProvider } from '../../providers/counterparty/counterparty'
 export class CounterpartyPage {
   public currentWorkspaceTitle:any;
   public counterparties = {
-    Client: {
-      active: [],
-      not_active: []
-    },
-    Vendor: {
-      active: [],
-      not_active: []
-    },
-    Other: {
-      active: [],
-      not_active: []
-    }
+    Client: [],
+    Vendor: [],
+    Other: []
   };
   public loader = false;
   public segment = {
@@ -47,7 +38,7 @@ export class CounterpartyPage {
   getCounterparties() {
     this.counterparty.getCounterparties().subscribe(
       res => {
-        this.createDataCounterparties(res)
+        this.createDataCounterparties(res.filter(counterparty => counterparty.active))
         this.loader = true
       },
       error => {
@@ -74,8 +65,7 @@ export class CounterpartyPage {
 
     addModal.onDidDismiss((res) => {
       if(res){
-        let status = res.active ? 'active' : 'not_active'
-        this.counterparties[res.type][status].unshift(res)
+        this.counterparties[res.type].unshift(res)
       }
     });
 
@@ -88,13 +78,11 @@ export class CounterpartyPage {
     addModal.onDidDismiss((res) => {
       if(res){
         delete res.workspace
-        let status = counterparty.active ? 'active' : 'not_active'
-        let newStatus = res.active ? 'active' : 'not_active'
 
-        for (var i = this.counterparties[counterparty.type][status].length - 1; i >= 0; i--) {
-          if (this.counterparties[counterparty.type][status][i].id === counterparty.id) {
-            this.counterparties[counterparty.type][status].splice(i, 1)
-            this.counterparties[res.type][newStatus].unshift(res)
+        for (var i = this.counterparties[counterparty.type].length - 1; i >= 0; i--) {
+          if (this.counterparties[counterparty.type][i].id === counterparty.id) {
+            this.counterparties[counterparty.type].splice(i, 1)
+            res.active ? this.counterparties[res.type].unshift(res) : ''
             break
           }
         }
@@ -104,13 +92,12 @@ export class CounterpartyPage {
     addModal.present();
   }
 
-  deleteCounterparty(id, type, active) {
+  deleteCounterparty(id, type) {
     this.counterparty.deleteCounterparty(id).subscribe(
       res => {
-        let status = active ? 'active' : 'not_active'
-        for (var i = this.counterparties[type][status].length - 1; i >= 0; i--) {
-          if (this.counterparties[type][status][i].id === id) {
-            this.counterparties[type][status].splice(i, 1)
+        for (var i = this.counterparties[type].length - 1; i >= 0; i--) {
+          if (this.counterparties[type][i].id === id) {
+            this.counterparties[type].splice(i, 1)
             break
           }
         }
@@ -123,25 +110,17 @@ export class CounterpartyPage {
 
   createDataCounterparties(foundCounterparties) {
     let fakeCounterparties = {
-      Client: {
-        active: [],
-        not_active: []
-      },
-      Vendor: {
-        active: [],
-        not_active: []
-      },
-      Other: {
-        active: [],
-        not_active: []
-      }
+      Client: [],
+      Vendor: [],
+      Other: []
     }
 
     for (var i = foundCounterparties.length - 1; i >= 0; i--) {
       let item = foundCounterparties[i]
-      let status = item.active ? 'active' : 'not_active'
 
-      fakeCounterparties[item.type][status].push(item)
+      if (item.active) {
+        fakeCounterparties[item.type].push(item)
+      }
     }
 
     this.counterparties = fakeCounterparties
