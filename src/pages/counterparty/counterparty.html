@@ -31,11 +31,11 @@
 
   <div [ngSwitch]="segment.current">
     <ion-list *ngSwitchCase=segment.current>
-      <ion-item no-lines *ngIf="!counterparties[segment.current]['active'].length">
+      <ion-item no-lines *ngIf="!counterparties[segment.current].length">
         Not have actice counterparty {{segment.current}}
       </ion-item>
 
-      <ion-item-sliding *ngFor="let counterparty of counterparties[segment.current]['active']; let i = index" [attr.data-index]="i">
+      <ion-item-sliding *ngFor="let counterparty of counterparties[segment.current]; let i = index" [attr.data-index]="i">
         <ion-item no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
           <div>
             {{ counterparty.name }}
@@ -50,30 +50,7 @@
         </ion-item-options>
 
         <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id, counterparty.type, counterparty.active)">Delete</button>
-        </ion-item-options>
-      </ion-item-sliding>
-
-      <hr>
-
-      <ion-item no-lines *ngIf="counterparties[segment.current]['not_active'].length">Not active</ion-item>
-
-      <ion-item-sliding  *ngFor="let counterparty of counterparties[segment.current]['not_active']; let i = index" [attr.data-index]="i">
-        <ion-item ngClass="not-active" no-lines [style.background-color]="i%2 != 0 ? '#f0f0f0' : '#fff'">
-          <div>
-            {{ counterparty.name }}
-          </div>
-          <div item-end>
-            {{ formatDate(counterparty.date) }}
-          </div>
-        </ion-item>
-
-        <ion-item-options side="left">
-          <button ion-button (click)="editCounterparty(counterparty)">Edit</button>
-        </ion-item-options>
-
-        <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id, counterparty.type, counterparty.active)">Delete</button>
+          <button ion-button color="danger" (click)="deleteCounterparty(counterparty.id, counterparty.type)">Delete</button>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
