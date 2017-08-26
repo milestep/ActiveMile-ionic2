@@ -54,11 +54,11 @@ export class ReportPage {
   getRegisters() {
     this.Register.getRegisters = []
 
-    this.register.getRegisters().subscribe(
+    this.register.getRegisters({year: new Date().getFullYear(), month: new Date().getMonth()}).subscribe(
       res => {
-        if (res.length) {
-          for (var i = res.length - 1; i >= 0; i--) {
-            let register = res[i]
+        if (res.items.length) {
+          for (var i = res.items.length - 1; i >= 0; i--) {
+            let register = res.items[i]
 
             this.Register.getRegisters.push({
               id: register.id, date: register.date, value: register.value,
