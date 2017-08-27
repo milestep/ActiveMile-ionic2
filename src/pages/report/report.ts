@@ -16,27 +16,25 @@ import { RegisterPage }   from '../register/register';
 })
 export class ReportPage {
   public currentWorkspaceTitle:any;
-  public Register = {
-    getRegisters: [],
-    RegistersFilterByYear: [],
-    RegistersFilterByYearAndMouth: [],
-    filterCosts: [],
-    filterRevenues: [],
-    totalSumaCosts: 0,
-    totalSumaRevenues: 0,
-    totalSuma: 0
+  public profit = {
+    total: 0,
+    Revenue: 0,
+    Cost: 0
   };
-
-  calendarFilter = {
-    foundYears: [],
-    foundMonths: [],
-    select_year: 0,
-    select_month: undefined,
-    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  public monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  public loader = false;
+  public articles = [];
+  public counterparties = [];
+  public report = {
+    Revenue: [],
+    Cost: []
   };
-
-  public foundArticles = [];
-  public foundCounterparties = [];
+  public filter_years = [];
+  public current = {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+    wordMonth: this.monthNames[new Date().getMonth()]
+  };
 
   constructor(
     protected app: App,
@@ -48,237 +46,109 @@ export class ReportPage {
 
     this.currentWorkspaceTitle = navParams.get('currentWorkspaceTitle');
 
-    this.getArticlesAndCounterpartiesAndRegisters()
+    this.getArticlesAndCounterparties()
   }
 
-  getRegisters() {
-    this.Register.getRegisters = []
+  createReportsData(registers) {
+    const { articles } = this
+    let report = {
+      Revenue: [],
+      Cost: []
+    }
 
-    this.register.getRegisters({year: new Date().getFullYear(), month: new Date().getMonth()}).subscribe(
-      res => {
-        if (res.items.length) {
-          for (var i = res.items.length - 1; i >= 0; i--) {
-            let register = res.items[i]
+    let profit = {
+      total: 0,
+      Revenue: 0,
+      Cost: 0
+    };
 
-            this.Register.getRegisters.push({
-              id: register.id, date: register.date, value: register.value,
-              article_id: register.article_id, counterparty_id: register.counterparty_id,
-              article_title: this.getRegisterData('article_title', register.article_id),
-              article_type: this.getRegisterData('article_type', register.article_id),
-              counterparty_name: this.getRegisterData('counterparty_name', register.counterparty_id),
-              counterparty_type: this.getRegisterData('counterparty_type', register.counterparty_id)
+    registers.forEach(register => {
+      register['article_title'] = this.converterRegisterData('articles', 'title', register.article_id)
+      register['article_type'] = this.converterRegisterData('articles', 'type', register.article_id)
+      register['counterparty_name'] = this.converterRegisterData('counterparties', 'name', register.counterparty_id)
+      register['counterparty_type'] = this.converterRegisterData('counterparties', 'type', register.counterparty_id)
+
+      const article = Object.assign({}, articles.find(article => article.id === register.article_id))
+      const reportType = report[article.type]
+
+      profit[article.type] += register.value
+      profit['total'] += this.getRegisterValue(article.type, register.value)
+
+      let isArticle = false
+      for (var i = reportType.length - 1; i >= 0; i--) {
+        if (reportType[i].article_id === register.article_id) {
+          isArticle = true
+          reportType[i].suma_value += register.value
+
+          let isCounterparty = false
+          for (var j = reportType[i].counterparty.length - 1; j >= 0; j--) {
+            if (reportType[i].counterparty[j].id === register.counterparty_id) {
+              isCounterparty = true
+              reportType[i].counterparty[j].value += register.value
+              break
+            }
+          }
+
+          if (!isCounterparty) {
+            reportType[i].counterparty.push({
+              id: register.counterparty_id,
+              counterparty_name: register.counterparty_name,
+              counterparty_type: register.counterparty_type,
+              value: register.value
             })
           }
 
-          this.initialization_filter_years()
-          this.select_filter("year", this.calendarFilter.select_year)
+          break
+        }
+      }
+
+      if (!isArticle) {
+        reportType.push({
+          article_id: register.article_id,
+          article_title: register.article_title,
+          article_type: register.article_type,
+          suma_value: register.value,
+          counterparty: [{
+            id: register.counterparty_id,
+            counterparty_name: register.counterparty_name,
+            counterparty_type: register.counterparty_type,
+            value: register.value
+          }]
+        })
+      }
+    })
+
+    this.profit = profit
+    this.report = report
+  }
+
+  getRegisters() {
+    this.register.getRegisters(this.current).subscribe(
+      res => {
+        if (res.years.length) {
+          this.createReportsData(res.items)
+          this.filter_years = res.years
+          this.loader = true
         } else {
           this.alertCtrl.showAlert("Info", "Add register", "OK")
           this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.currentWorkspaceTitle});
         }
       },
       error => {
+        this.loader = true
         console.log("error", error)
       }
     );
   }
 
-  filterCostOrRevenue() {
-    this.Register.filterCosts = []
-    this.Register.filterRevenues = []
-
-    for (var i = this.Register.RegistersFilterByYearAndMouth.length - 1; i >= 0; i--) {
-      let register = this.Register.RegistersFilterByYearAndMouth[i]
-      if (register.article_type === 'Cost') {
-        this.Register.filterCosts.push(register)
-      } else {
-        this.Register.filterRevenues.push(register)
-      }
-    }
-
-    // Cost
-    let forFilterCost = []
-
-    for (var i = this.Register.filterCosts.length - 1; i >= 0; i--) {
-      let register_i = this.Register.filterCosts[i]
-      let bool = false
-
-      // щоб в select не було повторень по article
-      for (var j = forFilterCost.length - 1; j >= 0; j--) {
-        let register_j = forFilterCost[j]
-
-        if (register_j.article_id === register_i.article_id) {
-          forFilterCost[j].suma_value = forFilterCost[j].suma_value + register_i.value
-
-          forFilterCost[j].counterparty.push({
-            counterparty_name: register_i.counterparty_name,
-            counterparty_type: register_i.counterparty_type,
-            value: register_i.value
-          })
-
-          bool = true
-          break
-        }
-      }
-
-      if (!bool) {
-        forFilterCost.push({
-          article_id: register_i.article_id,
-          article_title: register_i.article_title,
-          article_type: register_i.article_type,
-          suma_value: register_i.value,
-          counterparty: [{
-            counterparty_name: register_i.counterparty_name,
-            counterparty_type: register_i.counterparty_type,
-            value: register_i.value
-          }]
-        })
-      }
-    }
-
-    this.Register.filterCosts = forFilterCost
-
-    //Revenues
-    let forFilterRevenues = []
-
-    for (var i = this.Register.filterRevenues.length - 1; i >= 0; i--) {
-      let register_i = this.Register.filterRevenues[i]
-      let bool = false
-
-      // щоб в select не було повторень по article
-      for (var j = forFilterRevenues.length - 1; j >= 0; j--) {
-        let register_j = forFilterRevenues[j]
-
-        if (register_j.article_id === register_i.article_id) {
-          forFilterRevenues[j].suma_value = forFilterRevenues[j].suma_value + register_i.value
-
-          forFilterRevenues[j].counterparty.push({
-            counterparty_name: register_i.counterparty_name,
-            counterparty_type: register_i.counterparty_type,
-            value: register_i.value
-          })
-
-          bool = true
-          break
-        }
-      }
-
-      if (!bool) {
-        forFilterRevenues.push({
-          article_id: register_i.article_id,
-          article_title: register_i.article_title,
-          article_type: register_i.article_type,
-          suma_value: register_i.value,
-          counterparty: [{
-            counterparty_name: register_i.counterparty_name,
-            counterparty_type: register_i.counterparty_type,
-            value: register_i.value
-          }]
-        })
-      }
-    }
-
-    this.Register.filterRevenues = forFilterRevenues
-
-    // // визначаю общю суму
-    this.totalSumaArticles('Cost', forFilterCost)
-    this.totalSumaArticles('Revenues', forFilterRevenues)
-  }
-
-  totalSumaArticles(model, register) {
-    let suma = 0
-
-    for (var i = register.length - 1; i >= 0; i--) {
-      suma += register[i].suma_value
-    }
-
-    if (model === 'Cost') {
-      this.Register.totalSumaCosts = suma
-    } else if (model === 'Revenues') {
-      this.Register.totalSumaRevenues = suma
-      this.totalSumaArticles('Total', 0)
-    } else if (model === 'Total') {
-      this.Register.totalSuma = this.Register.totalSumaRevenues - this.Register.totalSumaCosts
-    }
-  }
-
-  getRegisterData(model, id) {
-    if (model === "article_title") {
-      for (var i = this.foundArticles.length - 1; i >= 0; i--) {
-        if (this.foundArticles[i].id === id) {
-          return this.foundArticles[i].title
-        }
-      }
-    } else if (model === "article_type") {
-      for (var i = this.foundArticles.length - 1; i >= 0; i--) {
-        if (this.foundArticles[i].id === id) {
-          return this.foundArticles[i].type
-        }
-      }
-    } else if (model === "counterparty_name") {
-      for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-        if (this.foundCounterparties[i].id === id) {
-          return this.foundCounterparties[i].name
-        }
-      }
-    } else if (model === "counterparty_type") {
-      for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-        if (this.foundCounterparties[i].id === id) {
-          return this.foundCounterparties[i].type
-        }
-      }
-    }
-  }
-
-  initialization_filter_years() {
-    this.calendarFilter.foundYears = []
-
-    for (var i = this.Register.getRegisters.length - 1; i >= 0; i--) {
-      let bool = false
-      let year = new Date(this.Register.getRegisters[i].date).getFullYear()
-
-      //calendarFilter select_year
-      if (this.calendarFilter.select_year != year && this.calendarFilter.select_year <= year) {
-        this.calendarFilter.select_year = year
-      }
-
-      // щоб в select не було повторень по годам
-      for (var j = this.calendarFilter.foundYears.length - 1; j >= 0; j--) {
-        if (this.calendarFilter.foundYears[j] === year) {
-          bool = true
-          break
-        }
-      }
-
-      if (!bool) {
-        this.calendarFilter.foundYears.push(year)
-      }
-    }
-
-    // sort years
-    let bool = false
-    while(!bool) {
-      bool = true
-
-      for (var i = this.calendarFilter.foundYears.length - 1; i >= 0; i--) {
-        if (this.calendarFilter.foundYears[i] <= this.calendarFilter.foundYears[i+1]) {
-          bool = false
-          let less_year = this.calendarFilter.foundYears[i]
-          this.calendarFilter.foundYears[i] = this.calendarFilter.foundYears[i+1]
-          this.calendarFilter.foundYears[i+1] = less_year
-        }
-      }
-    }
-  }
-
-  getArticlesAndCounterpartiesAndRegisters() {
+  getArticlesAndCounterparties() {
     this.article.getArticles().subscribe(
       resArticle => {
-        this.foundArticles = resArticle
+        this.articles = resArticle
 
         this.counterparty.getCounterparties().subscribe(
           resCounterparties => {
-            this.foundCounterparties = resCounterparties
+            this.counterparties = resCounterparties
             this.getRegisters()
           }
         );
@@ -286,92 +156,18 @@ export class ReportPage {
     );
   }
 
-  select_filter(model, data) {
-    if (model === 'year') {
-      this.calendarFilter.select_year = data
-      this.Register.RegistersFilterByYear = [];
-      this.Register.RegistersFilterByYearAndMouth = [];
-
-      for (var i = this.Register.getRegisters.length - 1; i >= 0; i--) {
-        let year = new Date(this.Register.getRegisters[i].date).getFullYear()
-
-        if (year === this.calendarFilter.select_year) {
-          let register = this.Register.getRegisters[i]
-
-          this.Register.RegistersFilterByYear.push({
-            id: register.id, date: register.date, value: register.value,
-            article_id: register.article_id, counterparty_id: register.counterparty_id,
-            article_title: register.article_title,
-            article_type: register.article_type,
-            counterparty_name: register.counterparty_name,
-            counterparty_type: register.counterparty_type
-          })
-        }
-      }
-
-      this.Register.RegistersFilterByYearAndMouth = this.Register.RegistersFilterByYear
-      this.select_filter("month", this.calendarFilter.select_month)
-    } else if (model === 'month') {
-      if (data === undefined) {
-        for (var i = this.Register.RegistersFilterByYear.length - 1; i >= 0; i--) {
-          let month = new Date(this.Register.RegistersFilterByYear[i].date).getMonth()
-
-          if (this.calendarFilter.select_month != month && this.calendarFilter.select_month <= month || this.calendarFilter.select_month === undefined ) {
-            this.calendarFilter.select_month = month
-          }
-        }
-
-        this.calendarFilter.select_month = this.calendarFilter.months[this.calendarFilter.select_month]
-        this.select_filter("month", this.calendarFilter.select_month)
-      } else {
-        this.calendarFilter.foundMonths = [];
-        let new_register = []
-
-        for (var i = this.Register.RegistersFilterByYear.length - 1; i >= 0; i--) {
-          let month = new Date(this.Register.RegistersFilterByYear[i].date).getMonth()
-
-          // узнаю які місяці будуть активні
-          let bool = false
-          for (var j = this.calendarFilter.foundMonths.length - 1; j >= 0; j--) {
-            if (this.calendarFilter.foundMonths[j] === this.calendarFilter.months[month]) {
-              bool = true
-              break
-            }
-          }
-
-          if (!bool) {
-            this.calendarFilter.foundMonths.push(this.calendarFilter.months[month])
-          }
-
-          // фільтрую calendarFilter select_month
-          if (this.calendarFilter.months[month] === this.calendarFilter.select_month) {
-            let register = this.Register.RegistersFilterByYear[i]
-
-            new_register.push({
-              id: register.id, date: register.date, value: register.value,
-              article_id: register.article_id, counterparty_id: register.counterparty_id,
-              article_title: register.article_title,
-              article_type: register.article_type,
-              counterparty_name: register.counterparty_name,
-              counterparty_type: register.counterparty_type
-            })
-          }
-        }
-
-        this.Register.RegistersFilterByYearAndMouth = new_register
-        this.filterCostOrRevenue()
-      }
-    }
+  getRegisterValue(type, value) {
+    return type == 'Cost' ? -value : value
   }
 
-  monthIsDisabled(month) {
-    for (var i = this.calendarFilter.foundMonths.length - 1; i >= 0; i--) {
-      if (month === this.calendarFilter.foundMonths[i]) {
-        return true
-      }
-    }
+  converterRegisterData(model, what, id) {
+    const res = this[model].find(m => m.id === id)
+    return res ? res[what] : '-'
+  }
 
-    return false
+  handleFilterChange(model, data) {
+    this.current[model] = data
+    this.getRegisters()
   }
 
   goWorkspacePage() {
@@ -379,7 +175,7 @@ export class ReportPage {
   }
 
   doRefresh(refresher) {
-    this.getArticlesAndCounterpartiesAndRegisters()
+    this.getArticlesAndCounterparties()
 
     setTimeout(() => {
       refresher.complete();

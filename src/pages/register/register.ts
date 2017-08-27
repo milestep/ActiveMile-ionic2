@@ -21,9 +21,9 @@ export class RegisterPage {
   workspaceData = {
     currentTitle: false
   };
-  public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-  public counterparties = [];
+  public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   public articles = [];
+  public counterparties = [];
   public registers = [];
   public filter_years = [];
   public current = {
@@ -32,7 +32,6 @@ export class RegisterPage {
     wordMonth: this.months[new Date().getMonth()]
   };
   public loader = false;
-
 
   constructor(
     protected app: App,
@@ -46,31 +45,6 @@ export class RegisterPage {
     this.workspaceData.currentTitle = navParams.get('currentWorkspaceTitle');
 
     this.getArticlesAndCounterparties()
-  }
-
-  getRegisters() {
-    this.register.getRegisters(this.current).subscribe(
-      res => {
-        this.createRegistersData(res.items)
-        this.filter_years = res.years
-        this.loader = true
-      },
-      error => {
-        this.loader = true
-        console.log("error", error)
-      }
-    );
-  }
-
-  createRegistersData(registers) {
-    registers.map((register, i) => {
-      register['article_title'] = this.converterRegisterData('articles', 'title', register.article_id)
-      register['article_type'] = this.converterRegisterData('articles', 'type', register.article_id)
-      register['counterparty_name'] = this.converterRegisterData('counterparties', 'name', register.counterparty_id)
-      register['counterparty_type'] = this.converterRegisterData('counterparties', 'type', register.counterparty_id)
-    })
-
-    this.registers = registers
   }
 
   showRegister(register) {
@@ -162,6 +136,17 @@ export class RegisterPage {
     );
   }
 
+  createRegistersData(registers) {
+    registers.map((register) => {
+      register['article_title'] = this.converterRegisterData('articles', 'title', register.article_id)
+      register['article_type'] = this.converterRegisterData('articles', 'type', register.article_id)
+      register['counterparty_name'] = this.converterRegisterData('counterparties', 'name', register.counterparty_id)
+      register['counterparty_type'] = this.converterRegisterData('counterparties', 'type', register.counterparty_id)
+    })
+
+    this.registers = registers
+  }
+
   converterRegisterData(model, what, id) {
     const res = this[model].find(m => m.id === id)
     return res ? res[what] : '-'
@@ -170,6 +155,20 @@ export class RegisterPage {
   handleFilterChange(model, data) {
     this.current[model] = data
     this.getRegisters()
+  }
+
+  getRegisters() {
+    this.register.getRegisters(this.current).subscribe(
+      res => {
+        this.createRegistersData(res.items)
+        this.filter_years = res.years
+        this.loader = true
+      },
+      error => {
+        this.loader = true
+        console.log("error", error)
+      }
+    );
   }
 
   getArticlesAndCounterparties() {

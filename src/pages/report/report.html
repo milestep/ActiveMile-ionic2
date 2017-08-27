@@ -19,26 +19,29 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-item *ngIf="!Register.getRegisters.length">
+  <div text-center>
+    <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
+  </div>
+
+  <ion-item *ngIf="!filter_years.length">
       No Report
   </ion-item>
 
-  <ion-list *ngIf="Register.getRegisters.length">
+  <ion-list *ngIf="filter_years.length">
     <ion-item>
       <ion-select interface="popover"
-        [(ngModel)]="calendarFilter.select_year"
+        [(ngModel)]="current.year"
       >
         <ion-option
-          *ngFor="let year of calendarFilter.foundYears"
-          (ionSelect)="select_filter('year', year)"
+          *ngFor="let year of filter_years"
+          (ionSelect)="handleFilterChange('year', year)"
         >{{year}}</ion-option>
       </ion-select>
 
-      <ion-select interface="popover" [(ngModel)]="calendarFilter.select_month">
+      <ion-select interface="popover" [(ngModel)]="current.wordMonth">
         <ion-option
-          *ngFor="let month of calendarFilter.months"
-          [disabled]="monthIsDisabled(month) ? 'false' : 'true'"
-          (ionSelect)="select_filter('month', month)"
+          *ngFor="let month of monthNames"
+          (ionSelect)="handleFilterChange('month', monthNames.indexOf(month))"
         >{{month}}</ion-option>
       </ion-select>
     </ion-item>
@@ -48,16 +51,16 @@
     <ion-grid>
       <ion-row>
         <ion-col col-9><h4>Revenues</h4></ion-col>
-        <ion-col col-3><h4>{{ Register.totalSumaRevenues }}</h4></ion-col>
+        <ion-col col-3><h4>{{ profit.Revenue }}</h4></ion-col>
       </ion-row>
 
-      <div *ngFor="let register of Register.filterRevenues; let i = index" [attr.data-index]="i">
+      <div *ngFor="let register of report.Revenue; let i = index" [attr.data-index]="i">
         <ion-row [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
           <ion-col col-9>{{register.article_title}}</ion-col>
           <ion-col col-3>{{register.suma_value}}</ion-col>
         </ion-row>
 
-        <ion-row *ngFor="let register_counterparty of Register.filterRevenues[i].counterparty">
+        <ion-row *ngFor="let register_counterparty of report.Revenue[i].counterparty">
           <ion-col col-1></ion-col>
           <ion-col col-8>{{ register_counterparty.counterparty_name }}</ion-col>
           <ion-col col-3>{{ register_counterparty.value }}</ion-col>
@@ -72,16 +75,16 @@
     <ion-grid>
       <ion-row>
         <ion-col col-9><h4>Cost</h4></ion-col>
-        <ion-col col-3><h4>{{ Register.totalSumaCosts }}</h4></ion-col>
+        <ion-col col-3><h4>{{ profit.Cost }}</h4></ion-col>
       </ion-row>
 
-      <div *ngFor="let register of Register.filterCosts; let i = index" [attr.data-index]="i">
+      <div *ngFor="let register of report.Cost; let i = index" [attr.data-index]="i">
         <ion-row [style.color]="register.article_type === 'Cost' ? 'red' : 'green'">
           <ion-col col-9>{{register.article_title}}</ion-col>
           <ion-col col-3>{{register.suma_value}}</ion-col>
         </ion-row>
 
-        <ion-row *ngFor="let register_counterparty of Register.filterCosts[i].counterparty">
+        <ion-row *ngFor="let register_counterparty of report.Cost[i].counterparty">
           <ion-col col-1></ion-col>
           <ion-col col-8>{{ register_counterparty.counterparty_name }}</ion-col>
           <ion-col col-3>{{ register_counterparty.value }}</ion-col>
@@ -96,7 +99,7 @@
     <ion-grid>
       <ion-row>
         <ion-col col-9><h4>Total</h4></ion-col>
-        <ion-col col-3><h4>{{ Register.totalSuma }}</h4></ion-col>
+        <ion-col col-3><h4>{{ profit.total }}</h4></ion-col>
       </ion-row>
     </ion-grid>
   </ion-navbar>
