@@ -21,19 +21,16 @@ export class RegisterPage {
   workspaceData = {
     currentTitle: false
   };
-
-  public Register = {
-    foundRegisters: [],
-    filter_by_year: [],
-    filter_by_year_and_month: [],
-    oll_years: [],
-    select_year: 0,
-    oll_months: [],
-    select_month: undefined
+  public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  public articles = [];
+  public counterparties = [];
+  public registers = [];
+  public filter_years = [];
+  public current = {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+    wordMonth: this.months[new Date().getMonth()]
   };
-  public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-  public foundArticles = [];
-  public foundCounterparties = [];
   public loader = false;
 
   constructor(
@@ -50,40 +47,8 @@ export class RegisterPage {
     this.getArticlesAndCounterparties()
   }
 
-  getRegisters() {
-    this.Register.foundRegisters = []
-
-    this.register.getRegisters().subscribe(
-      res => {
-        if (res.length) {
-          for (var i = res.length - 1; i >= 0; i--) {
-            let register = res[i]
-
-            this.Register.foundRegisters.push({
-              id: register.id, date: register.date, value: register.value, note: register.note,
-              article_id: register.article_id, counterparty_id: register.counterparty_id,
-              article_title: this.getRegisterData('article_title', register.article_id),
-              article_type: this.getRegisterData('article_type', register.article_id),
-              counterparty_name: this.getRegisterData('counterparty_name', register.counterparty_id),
-              counterparty_type: this.getRegisterData('counterparty_type', register.counterparty_id)
-            })
-          }
-
-          this.initialization_filter_years()
-          this.select_filter("year", this.Register.select_year)
-        }
-
-        this.loader = true
-      },
-      error => {
-        this.loader = true
-        console.log("error", error)
-      }
-    );
-  }
-
-  showRegister(register){
-    let addModal = this.modalCtrl.create(RegisterShowPage, {register: register});
+  showRegister(register) {
+    let addModal = this.modalCtrl.create(RegisterShowPage, {register: register, articles: this.articles, counterparties: this.counterparties});
 
     addModal.onDidDismiss((action, id_or_register) => {
       if (action && id_or_register) {
@@ -97,22 +62,27 @@ export class RegisterPage {
     addModal.present();
   }
 
-  newRegister(){
-    let addModal = this.modalCtrl.create(RegisterNewEditPage, {foundArticles: this.foundArticles, foundCounterparties: this.foundCounterparties});
+  newRegister() {
+    let addModal = this.modalCtrl.create(RegisterNewEditPage, {foundArticles: this.articles, foundCounterparties: this.counterparties.filter(counterparty => counterparty.active) });
 
     addModal.onDidDismiss((res) => {
       if(res){
-        this.Register.foundRegisters.unshift({
-          id: res.id, date: res.date, value: res.value, note: res.note,
-          article_id: res.article_id, counterparty_id: res.counterparty_id,
-          article_title: res.article.title,
-          article_type: res.article.type,
-          counterparty_name: res.counterparty.name,
-          counterparty_type: res.counterparty.type
-        })
+        const { current } = this
+        const date = new Date(res.date),
+          year = date.getFullYear(),
+          month = date.getMonth()
 
-        this.initialization_filter_years()
-        this.select_filter("year", this.Register.select_year)
+        if (month == current.month && year == current.year) {
+          res['article_title'] = res.article.title
+          res['article_type'] = res.article.type
+          res['counterparty_name'] = res.counterparty.name
+          res['counterparty_type'] = res.counterparty.type
+
+          delete res.article
+          delete res.counterparty
+
+          this.registers.unshift(res)
+        }
       }
     });
 
@@ -120,26 +90,35 @@ export class RegisterPage {
   }
 
   editRegister(register) {
-    let addModal = this.modalCtrl.create(RegisterNewEditPage, {foundArticles: this.foundArticles, foundCounterparties: this.foundCounterparties, register: register});
+    let addModal = this.modalCtrl.create(RegisterNewEditPage, {register: register, foundArticles: this.articles, foundCounterparties: this.counterparties.filter(counterparty => counterparty.active)});
 
     addModal.onDidDismiss((res) => {
       if(res){
-        for (var i = this.Register.foundRegisters.length - 1; i >= 0; i--) {
-          if (this.Register.foundRegisters[i].id === res.id) {
-            this.Register.foundRegisters[i] = {
-              id: res.id, date: res.date, value: res.value, note: res.note,
-              article_id: res.article_id, counterparty_id: res.counterparty_id,
-              article_title: res.article.title,
-              article_type: res.article.type,
-              counterparty_name: res.counterparty.name,
-              counterparty_type: res.counterparty.type
-            }
-            break
-          }
-        }
+        const { current } = this
+        const date = new Date(res.date),
+          year = date.getFullYear(),
+          month = date.getMonth()
 
-        this.initialization_filter_years()
-        this.select_filter("year", this.Register.select_year)
+        if (month == current.month && year == current.year) {
+          let { registers } = this
+
+          for (var i = registers.length - 1; i >= 0; i--) {
+            if (registers[i].id === res.id) {
+              res['article_title'] = res.article.title
+              res['article_type'] = res.article.type
+              res['counterparty_name'] = res.counterparty.name
+              res['counterparty_type'] = res.counterparty.type
+
+              delete res.article
+              delete res.counterparty
+
+              registers[i] = res
+              break
+            }
+          }
+        } else {
+          this.registers = this.registers.filter(register => register.id !== res.id);
+        }
       }
     });
 
@@ -149,15 +128,7 @@ export class RegisterPage {
   deleteRegister(id) {
     this.register.deleteRegister(id).subscribe(
       res => {
-        for (var i = this.Register.foundRegisters.length - 1; i >= 0; i--) {
-          if (this.Register.foundRegisters[i].id === id) {
-            this.Register.foundRegisters.splice(i, 1)
-            break
-          }
-        }
-
-        this.initialization_filter_years()
-        this.select_filter("year", this.Register.select_year)
+        this.registers = this.registers.filter(register => register.id !== id);
       },
       error => {
         console.log("error", error)
@@ -165,160 +136,39 @@ export class RegisterPage {
     );
   }
 
-  getRegisterData(model, id) {
-    if (model === "article_title") {
-      for (var i = this.foundArticles.length - 1; i >= 0; i--) {
-        if (this.foundArticles[i].id === id) {
-          return this.foundArticles[i].title
-        }
-      }
-    } else if (model === "article_type") {
-      for (var i = this.foundArticles.length - 1; i >= 0; i--) {
-        if (this.foundArticles[i].id === id) {
-          return this.foundArticles[i].type
-        }
-      }
-    } else if (model === "counterparty_name") {
-      for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-        if (this.foundCounterparties[i].id === id) {
-          return this.foundCounterparties[i].name
-        }
-      }
-    } else if (model === "counterparty_type") {
-      for (var i = this.foundCounterparties.length - 1; i >= 0; i--) {
-        if (this.foundCounterparties[i].id === id) {
-          return this.foundCounterparties[i].type
-        }
-      }
-    }
+  createRegistersData(registers) {
+    registers.map((register) => {
+      register['article_title'] = this.converterRegisterData('articles', 'title', register.article_id)
+      register['article_type'] = this.converterRegisterData('articles', 'type', register.article_id)
+      register['counterparty_name'] = this.converterRegisterData('counterparties', 'name', register.counterparty_id)
+      register['counterparty_type'] = this.converterRegisterData('counterparties', 'type', register.counterparty_id)
+    })
+
+    this.registers = registers
   }
 
-  initialization_filter_years() {
-    this.Register.oll_years = []
-
-    for (var i = this.Register.foundRegisters.length - 1; i >= 0; i--) {
-      let bool = false
-      let year = new Date(this.Register.foundRegisters[i].date).getFullYear()
-
-      //визначаю select_year
-      if (this.Register.select_year != year && this.Register.select_year <= year) {
-        this.Register.select_year = year
-      }
-
-      // щоб в select не було повторень по годам
-      for (var j = this.Register.oll_years.length - 1; j >= 0; j--) {
-        if (this.Register.oll_years[j] === year) {
-          bool = true
-          break
-        }
-      }
-
-      if (!bool) {
-        this.Register.oll_years.push(year)
-      }
-    }
-
-    // sort years
-    let bool = false
-    while(!bool) {
-      bool = true
-
-      for (var i = this.Register.oll_years.length - 1; i >= 0; i--) {
-        if (this.Register.oll_years[i] <= this.Register.oll_years[i+1]) {
-          bool = false
-          let less_year = this.Register.oll_years[i]
-          this.Register.oll_years[i] = this.Register.oll_years[i+1]
-          this.Register.oll_years[i+1] = less_year
-        }
-      }
-    }
+  converterRegisterData(model, what, id) {
+    const res = this[model].find(m => m.id === id)
+    return res ? res[what] : '-'
   }
 
-  select_filter(model, data) {
-    if (model === 'year') {
-      this.Register.select_year = data
-      this.Register.filter_by_year = [];
-      this.Register.filter_by_year_and_month = [];
-
-      for (var i = this.Register.foundRegisters.length - 1; i >= 0; i--) {
-        let year = new Date(this.Register.foundRegisters[i].date).getFullYear()
-
-        if (year === this.Register.select_year) {
-          let register = this.Register.foundRegisters[i]
-
-          this.Register.filter_by_year.push({
-            id: register.id, date: register.date, value: register.value, note: register.note,
-            article_id: register.article_id, counterparty_id: register.counterparty_id,
-            article_title: register.article_title,
-            article_type: register.article_type,
-            counterparty_name: register.counterparty_name,
-            counterparty_type: register.counterparty_type
-          })
-        }
-      }
-
-      this.Register.filter_by_year_and_month = this.Register.filter_by_year
-      this.select_filter("month", this.Register.select_month)
-    } else if (model === 'month') {
-      if (data === undefined) {
-        for (var i = this.Register.filter_by_year.length - 1; i >= 0; i--) {
-          let month = new Date(this.Register.filter_by_year[i].date).getMonth()
-
-          if (this.Register.select_month != month && this.Register.select_month <= month || this.Register.select_month === undefined ) {
-            this.Register.select_month = month
-          }
-        }
-
-        this.Register.select_month = this.months[this.Register.select_month]
-        this.select_filter("month", this.Register.select_month)
-      } else {
-        this.Register.oll_months = [];
-        let new_register = []
-
-        for (var i = this.Register.filter_by_year.length - 1; i >= 0; i--) {
-          let month = new Date(this.Register.filter_by_year[i].date).getMonth()
-
-          // узнаю які місяці будуть активні
-          let bool = false
-          for (var j = this.Register.oll_months.length - 1; j >= 0; j--) {
-            if (this.Register.oll_months[j] === this.months[month]) {
-              bool = true
-              break
-            }
-          }
-
-          if (!bool) {
-            this.Register.oll_months.push(this.months[month])
-          }
-
-          // фільтрую по select_month
-          if (this.months[month] === this.Register.select_month) {
-            let register = this.Register.filter_by_year[i]
-
-            new_register.push({
-              id: register.id, date: register.date, value: register.value, note: register.note,
-              article_id: register.article_id, counterparty_id: register.counterparty_id,
-              article_title: register.article_title,
-              article_type: register.article_type,
-              counterparty_name: register.counterparty_name,
-              counterparty_type: register.counterparty_type
-            })
-          }
-        }
-
-        this.Register.filter_by_year_and_month = new_register
-      }
-    }
+  handleFilterChange(model, data) {
+    this.current[model] = data
+    this.getRegisters()
   }
 
-  monthIsDisabled(month) {
-    for (var i = this.Register.oll_months.length - 1; i >= 0; i--) {
-      if (month === this.Register.oll_months[i]) {
-        return true
+  getRegisters() {
+    this.register.getRegisters(this.current).subscribe(
+      res => {
+        this.createRegistersData(res.items)
+        this.filter_years = res.years
+        this.loader = true
+      },
+      error => {
+        this.loader = true
+        console.log("error", error)
       }
-    }
-
-    return false
+    );
   }
 
   getArticlesAndCounterparties() {
@@ -328,8 +178,8 @@ export class RegisterPage {
           this.counterparty.getCounterparties().subscribe(
             resCounterparty => {
               if (resCounterparty.length) {
-                this.foundArticles = resArticle
-                this.foundCounterparties = resCounterparty
+                this.articles = resArticle
+                this.counterparties = resCounterparty
 
                 this.getRegisters()
               } else {
@@ -348,7 +198,7 @@ export class RegisterPage {
     );
   }
 
-  getDate(date) {
+  converterDate(date) {
     let new_date = `${new Date(date).getDate()}/${new Date(date).getMonth() + 1}`
     return new_date;
   }
@@ -358,7 +208,6 @@ export class RegisterPage {
   }
 
   doRefresh(refresher) {
-    console.log(refresher)
     this.getArticlesAndCounterparties()
 
     setTimeout(() => {

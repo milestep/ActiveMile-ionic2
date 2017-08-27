@@ -7,8 +7,7 @@ import { IonicPage, ViewController, NavParams }  from 'ionic-angular';
   templateUrl: 'register-show.html',
 })
 export class RegisterShowPage {
-  public show_register = {
-  };
+  public show_register = {};
 
   constructor(
     public navParams: NavParams,

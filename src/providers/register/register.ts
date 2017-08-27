@@ -29,7 +29,10 @@ export class RegisterProvider {
     });
   }
 
-  getRegisters() {
+  getRegisters(current) {
+    this.OPTIONS.headers.set('year', current.year);
+    this.OPTIONS.headers.set('month', current.month);
+
     return this.http.get(this.URL, this.OPTIONS)
     .do((res: Response) => {})
     .map(this.extractData)
