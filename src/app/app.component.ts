@@ -19,6 +19,7 @@ import { ArticlePage }      from '../pages/article/article';
 import { CounterpartyPage } from '../pages/counterparty/counterparty';
 import { RegisterPage }     from '../pages/register/register';
 import { ReportPage }       from '../pages/report/report';
+import { ChartPage }        from '../pages/chart/chart';
 
 @Component({
   templateUrl: 'app.html'
@@ -29,7 +30,8 @@ export class MyApp {
     {icon: 'clipboard', name: 'Articles'},
     {icon: 'contacts', name: 'Counterparties'},
     {icon: 'md-paper', name: 'Registers'},
-    {icon: 'ios-pie-outline', name: 'Reports'}
+    {icon: 'logo-buffer', name: 'Reports'},
+    {icon: 'ios-pie-outline', name: 'Charts'}
   ];
   workspaceData = {
     currentId: false,
@@ -151,6 +153,8 @@ export class MyApp {
       this.app.getRootNav().setRoot(RegisterPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
     } else if (i === "Reports") {
       this.app.getRootNav().setRoot(ReportPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
+    } else if (i === "Charts") {
+      this.app.getRootNav().setRoot(ChartPage, {currentWorkspaceTitle: this.workspaceData.currentTitle});
     }
   }
 }

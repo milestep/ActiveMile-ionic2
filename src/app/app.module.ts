@@ -19,6 +19,7 @@ import { RegisterPage } from '../pages/register/register';
 import { RegisterNewEditPage } from '../pages/register-new-edit/register-new-edit';
 import { RegisterShowPage } from '../pages/register-show/register-show';
 import { ReportPage } from '../pages/report/report';
+import { ChartPage } from '../pages/chart/chart';
 
 import { AuthProvider } from '../providers/auth/auth';
 import { WorkspaceProvider } from '../providers/workspace/workspace';
@@ -44,7 +45,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     RegisterPage,
     RegisterNewEditPage,
     RegisterShowPage,
-    ReportPage
+    ReportPage,
+    ChartPage
   ],
   imports: [
     BrowserModule,
@@ -65,7 +67,8 @@ import { AlertCtrl } from '../providers/alert/alert';
     RegisterPage,
     RegisterNewEditPage,
     RegisterShowPage,
-    ReportPage
+    ReportPage,
+    ChartPage
   ],
   providers: [
     StatusBar,

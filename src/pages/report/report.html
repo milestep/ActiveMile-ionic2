@@ -23,11 +23,7 @@
     <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
   </div>
 
-  <ion-item *ngIf="!filter_years.length">
-      No Report
-  </ion-item>
-
-  <ion-list *ngIf="filter_years.length">
+  <ion-list>
     <ion-item>
       <ion-select interface="popover"
         [(ngModel)]="current.year"
