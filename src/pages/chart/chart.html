@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-title>Chart</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="goWorkspacePage()">
+        <ion-label>{{ currentWorkspaceTitle }}</ion-label>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div text-center>
+    <ion-spinner name="bubbles" text-center *ngIf="!loader"></ion-spinner>
+  </div>
+
+  <ion-list *ngIf="loader">
+    <ion-item>
+      <ion-select interface="popover"
+        [(ngModel)]="current.year"
+      >
+        <ion-option
+          *ngFor="let year of filter_years"
+          (ionSelect)="handleFilterChange(year)"
+        >{{year}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <canvas #barCanvas></canvas>
+</ion-content>
