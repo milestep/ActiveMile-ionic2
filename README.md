@@ -1,1 +1,1 @@
-#### Application apk: [master/platforms/android/build/outputs/apk/android-debug.apk](https://github.com/milestep/ActiveMile-ionic2/blob/master/platforms/android/build/outputs/apk/android-debug.apk)
+#### Application apk: [master/platforms/android/app/build/outputs/apk/debug/app-debug.apk](https://github.com/milestep/ActiveMile-ionic2/blob/master/platforms/android/app/build/outputs/apk/debug/app-debug.apk)

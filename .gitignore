@@ -22,10 +22,6 @@ node_modules/
 tmp/
 temp/
 hooks/
-platforms/platforms.json
-platforms/android/*
-!platforms/android/build*
-!platforms/android/.gitignore
 plugins/
 plugins/android.json
 plugins/ios.json
@@ -35,3 +31,16 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+platforms/android/*
+!platforms/android/app
+platforms/android/app/*
+!platforms/android/app/build
+platforms/android/app/build/*
+!platforms/android/app/build/outputs
+platforms/android/app/build/outputs/*
+!platforms/android/app/build/outputs/apk
+platforms/android/app/build/outputs/apk/*
+!platforms/android/app/build/outputs/apk/debug
+platforms/android/app/build/outputs/apk/debug/*
+!platforms/android/app/build/outputs/apk/debug/app-debug.apk
