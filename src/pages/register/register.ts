@@ -75,8 +75,14 @@ export class RegisterPage {
         if (month == current.month && year == current.year) {
           res['article_title'] = res.article.title
           res['article_type'] = res.article.type
-          res['counterparty_name'] = res.counterparty.name
-          res['counterparty_type'] = res.counterparty.type
+
+          if(res.counterparty) {
+            res['counterparty_name'] = res.counterparty.name
+            res['counterparty_type'] = res.counterparty.type
+          } else {
+            res['counterparty_name'] = '-'
+            res['counterparty_type'] = '-'
+          }
 
           delete res.article
           delete res.counterparty
@@ -106,8 +112,14 @@ export class RegisterPage {
             if (registers[i].id === res.id) {
               res['article_title'] = res.article.title
               res['article_type'] = res.article.type
-              res['counterparty_name'] = res.counterparty.name
-              res['counterparty_type'] = res.counterparty.type
+
+              if(res.counterparty) {
+                res['counterparty_name'] = res.counterparty.name
+                res['counterparty_type'] = res.counterparty.type
+              } else {
+                res['counterparty_name'] = '-'
+                res['counterparty_type'] = '-'
+              }
 
               delete res.article
               delete res.counterparty

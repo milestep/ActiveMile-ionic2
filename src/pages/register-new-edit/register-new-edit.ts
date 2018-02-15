@@ -61,9 +61,9 @@ export class RegisterNewEditPage {
       this.new_edit_register.article_id = this.foundArticles[0].id
       this.new_edit_register.article_title = this.foundArticles[0].title
       this.new_edit_register.article_type = this.foundArticles[0].type
-      this.new_edit_register.counterparty_id = this.foundCounterparties[0].id
-      this.new_edit_register.counterparty_name = this.foundCounterparties[0].name
-      this.new_edit_register.counterparty_type = this.foundCounterparties[0].type
+      this.new_edit_register.counterparty_id = ''
+      this.new_edit_register.counterparty_name = ''
+      this.new_edit_register.counterparty_type = ''
     }
   }
 
